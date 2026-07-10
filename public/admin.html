@@ -35,7 +35,43 @@
             padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,.1);
         }
+        .status{
 
+    padding:10px;
+
+    border-radius:8px;
+
+    margin:10px 0;
+
+    font-weight:bold;
+
+    color:white;
+
+}
+
+.pending{
+
+    background:#ffc107;
+
+}
+
+.processing{
+
+    background:#0d6efd;
+
+}
+
+.completed{
+
+    background:#198754;
+
+}
+
+.paid{
+
+    background:#6f42c1;
+
+}
         .title {
             font-size: 20px;
             font-weight: bold;
@@ -51,7 +87,28 @@
             color:red;
             font-weight:bold;
         }
+        .top-bar{
+    display:flex;
+    justify-content:flex-end;
+    padding:15px 20px;
+}
 
+.menu-btn{
+    background:#198754;
+    color:#fff;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:.25s;
+}
+
+.menu-btn:hover{
+    background:#157347;
+    transform:translateY(-2px);
+}
     </style>
 
 </head>
@@ -59,7 +116,39 @@
 <body>
 
 <h1>🍽️ Đơn hàng</h1>
+<div class="top-bar">
+    <button onclick="location.href='/menu-admin.html'" class="menu-btn">
+        🍽️ Quản lý thực đơn
+    </button>
+</div>
+<div style="text-align:center;margin:15px">
 
+<button onclick="loadOrders()">
+
+🔄 Làm mới
+
+</button>
+
+</div>
+<div style="display:flex;gap:10px;justify-content:center;margin:20px">
+
+<div class="card" style="width:180px;text-align:center">
+
+<h3 id="countOrder">0</h3>
+
+<p>Tổng đơn</p>
+
+</div>
+
+<div class="card" style="width:180px;text-align:center">
+
+<h3 id="totalMoney">0đ</h3>
+
+<p>Doanh thu</p>
+
+</div>
+
+</div>
 <div id="orders"></div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -72,29 +161,46 @@ const audio = new Audio(
 async function loadOrders() {
 
     const res = await fetch("/api/orders");
-    const data = await res.json();
 
+        if(!res.ok){
+
+            alert("Không tải được đơn hàng");
+
+            return;
+
+        }
+        const data = await res.json();
+        document.getElementById("countOrder").innerHTML=data.length;
+
+    const money=data
+    .filter(o=>o.status==="paid")
+    .reduce((s,o)=>s+o.total,0);
+
+    document.getElementById("totalMoney").innerHTML=
+    money.toLocaleString()+"đ";
+    
+        console.log(data);
     let html = "";
 
-    data.reverse().forEach(order => {
+    data.forEach(order => {
 
         let actionButton = "";
 
         if (order.status === "pending") {
             actionButton = `
-                <button onclick="changeStatus(${order.id},'processing')">
+                <button onclick="changeStatus('${order._id}','processing')">
                     ✔ Xác nhận
                 </button>
             `;
         } else if (order.status === "processing") {
             actionButton = `
-                <button onclick="changeStatus(${order.id},'completed')">
+                <button onclick="changeStatus('${order._id}','completed')">
                     🍳 Hoàn thành
                 </button>
             `;
         } else if (order.status === "completed") {
             actionButton = `
-                <button onclick="changeStatus(${order.id},'paid')">
+                <button onclick="changeStatus('${order._id}','paid')">
                     💰 Đã thanh toán
                 </button>
             `;
@@ -117,9 +223,11 @@ async function loadOrders() {
 
             <p>${order.note || ""}</p>
 
-            <div style="margin:10px 0;font-weight:bold">
-                ${statusText(order.status)}
-            </div>
+            <div class="status ${order.status}">
+
+                    ${statusText(order.status)}
+
+                </div>
 
             <ul>
                 ${order.items.map(item => `
@@ -146,11 +254,9 @@ async function loadOrders() {
 
 loadOrders();
 
-socket.on("new-order", (order) => {
+socket.on("new-order",()=>{
 
-    console.log("Có đơn mới", order);
-
-    audio.play();
+    audio.play().catch(()=>{});
 
     loadOrders();
 
@@ -184,7 +290,7 @@ function statusText(status){
 }
 async function changeStatus(id,status){
 
-    await fetch("/api/orders/"+id+"/status",{
+    const res = await fetch(`/api/orders/${id}/status`,{
 
         method:"PUT",
 
@@ -198,7 +304,11 @@ async function changeStatus(id,status){
 
     });
 
-    loadOrders();
+    if(res.ok){
+
+        loadOrders();
+
+    }
 
 }
 </script>

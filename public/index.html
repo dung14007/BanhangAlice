@@ -256,19 +256,66 @@
             modal.style.display="none";
 
         };
-        const foods = [
-            { name: "Cơm gà", price: 55000, img: "https://picsum.photos/300/200?1" },
-            { name: "Mì Quảng", price: 45000, img: "https://picsum.photos/300/200?2" },
-            { name: "Bò lúc lắc", price: 89000, img: "https://picsum.photos/300/200?3" },
-            { name: "Trà đào", price: 30000, img: "https://picsum.photos/300/200?4" }
-        ];
+        let foods = [];
         let cart = {};
-        function render(list) {
-            grid.innerHTML = "";
-            list.forEach((f, i) => {
-                grid.innerHTML += `<div class=card><img src="${f.img}"><div class=info><h3>${f.name}</h3><div class=price>${f.price.toLocaleString()}đ</div><br><button onclick="add(${i})">Thêm</button></div></div>`;
-            });
-        }
+        async function loadMenu() {
+
+    try {
+
+        const res = await fetch("/api/menu");
+
+        foods = await res.json();
+
+        render(foods);
+
+    } catch (err) {
+
+        console.log(err);
+
+        alert("Không tải được menu");
+
+    }
+
+}
+        function render(list){
+
+    grid.innerHTML="";
+
+    list.forEach(food=>{
+
+        grid.innerHTML+=`
+
+        <div class="card">
+
+            <img src="${food.img || food.image}">
+
+            <div class="info">
+
+                <h3>${food.name}</h3>
+
+                <div class="price">
+
+                    ${food.price.toLocaleString()}đ
+
+                </div>
+
+                <br>
+
+                <button onclick="add('${food._id}')">
+
+                    Thêm
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
         function changeTable(){
 
             localStorage.removeItem("table");
@@ -276,17 +323,30 @@
             location.reload();
 
         }
-        function add(i) {
-            cart[i] = (cart[i] || 0) + 1;
-            let c = 0, t = 0;
-            for (let k in cart) { c += cart[k]; t += cart[k] * foods[k].price; }
-            count.textContent = c; total.textContent = t.toLocaleString() + "đ";
-        }
+        function add(id){
+
+    const food = foods.find(f => f._id === id);
+
+    if(!food) return;
+
+    cart[id] ??= {
+
+        food,
+
+        qty:0
+
+    };
+
+    cart[id].qty++;
+
+    updateCart();
+
+}
         search.oninput = e => {
             const k = e.target.value.toLowerCase();
             render(foods.filter(f => f.name.toLowerCase().includes(k)));
         }
-        render(foods);
+        loadMenu();
         async function placeOrder(){
 
     if(Object.keys(cart).length===0){
@@ -297,27 +357,20 @@
 
     }
 
-    const items=[];
+  
 
-    let totalMoney=0;
 
-    for(const i in cart){
+    const items = Object.values(cart).map(item => ({
+    id: item.food._id,
+    name: item.food.name,
+    qty: item.qty,
+    price: item.food.price
+}));
 
-        items.push({
-
-            id:i,
-
-            name:foods[i].name,
-
-            qty:cart[i],
-
-            price:foods[i].price
-
-        });
-
-        totalMoney+=foods[i].price*cart[i];
-
-    }
+const totalMoney = Object.values(cart).reduce(
+    (sum, item) => sum + item.qty * item.food.price,
+    0
+);
 
     const res=await fetch("/api/orders",{
 
@@ -348,7 +401,7 @@
     alert("Đặt món thành công!");
 
     cart = {};
-    render(foods);
+    updateCart();
 
     count.textContent = 0;
 
@@ -361,7 +414,25 @@
 }
 
 }
+function updateCart(){
 
+    let countItem = 0;
+
+    let money = 0;
+
+    Object.values(cart).forEach(item=>{
+
+        countItem += item.qty;
+
+        money += item.qty * item.food.price;
+
+    });
+
+    count.textContent = countItem;
+
+    total.textContent = money.toLocaleString()+"đ";
+
+}
     </script>
 </body>
 
