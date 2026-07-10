@@ -4,110 +4,354 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý đơn hàng</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial;
-        }
+        *{
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
 
-        body {
-            margin: 0;
-            background: #f5f5f5;
-        }
+body{
+    margin:0;
+    background:#f1f3f5;
+}
 
-        h1 {
-            margin: 0;
-            padding: 20px;
-            background: #ff6b00;
-            color: white;
-            text-align: center;
-        }
 
-        #orders {
-            padding: 20px;
-        }
+/* HEADER */
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.1);
-        }
-        .status{
+h1{
+    background:#ff6b00;
+    color:white;
+    margin:0;
+    padding:18px;
+    text-align:center;
+    font-size:22px;
+}
+
+
+/* BUTTON */
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    font-weight:700;
+    font-size:15px;
+}
+
+
+/* MENU */
+
+.top-bar{
+    padding:10px;
+}
+
+
+.menu-btn{
+    width:100%;
+    background:#198754;
+    color:white;
+}
+
+
+/* ORDERS */
+
+#orders{
+    padding:12px;
+}
+
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:16px;
+
+    margin-bottom:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+
+/* khách */
+
+.title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#333;
+
+    margin-bottom:5px;
+
+}
+
+
+
+/* thời gian */
+
+.card div[style]{
+
+    font-size:12px!important;
+
+}
+
+
+
+/* trạng thái */
+
+.status{
+
+    text-align:center;
 
     padding:10px;
 
-    border-radius:8px;
+    border-radius:20px;
 
-    margin:10px 0;
-
-    font-weight:bold;
+    margin:12px 0;
 
     color:white;
 
+    font-weight:bold;
+
 }
+
+
 
 .pending{
 
-    background:#ffc107;
+    background:#ffb703;
 
 }
+
+
 
 .processing{
 
-    background:#0d6efd;
+    background:#0077ff;
 
 }
+
+
 
 .completed{
 
-    background:#198754;
+    background:#00a86b;
 
 }
+
+
 
 .paid{
 
     background:#6f42c1;
 
 }
-        .title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ff6b00;
-        }
 
-        ul{
-            padding-left:20px;
-        }
 
-        .total{
-            font-size:18px;
-            color:red;
-            font-weight:bold;
-        }
-        .top-bar{
+
+/* món ăn */
+
+ul{
+
+    background:#f8f9fa;
+
+    border-radius:12px;
+
+    padding:12px 25px;
+
+}
+
+
+li{
+
+    padding:6px;
+
+    font-size:15px;
+
+}
+
+
+
+/* tiền */
+
+.total{
+
+    font-size:22px;
+
+    color:#e53935;
+
+    margin:12px 0;
+
+}
+
+
+
+/* nút xử lý */
+
+.card button{
+
+    width:100%;
+
+    background:#ff6b00;
+
+    color:white;
+
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width:600px){
+
+    body{
+        background:#f5f5f5;
+    }
+
+
+    h1{
+        font-size:26px;
+        padding:22px 10px;
+    }
+
+
+    .top-bar{
+        padding:15px;
+    }
+
+
+    .menu-btn{
+        height:55px;
+        font-size:18px;
+        border-radius:15px;
+    }
+
+
+    /* nút làm mới */
+    button{
+        min-height:55px;
+        font-size:17px;
+    }
+
+
+    /* thống kê */
+    body > div[style*="display:flex"]{
+
+        flex-direction:column;
+        margin:15px!important;
+        gap:15px!important;
+
+    }
+
+
+    body > div[style*="display:flex"] .card{
+
+        width:100%!important;
+        padding:20px;
+
+    }
+
+
+    #countOrder,
+    #totalMoney{
+
+        font-size:30px;
+
+    }
+
+
+    /* danh sách đơn */
+
+    #orders{
+
+        padding:15px;
+
+    }
+
+
+    .card{
+
+        border-radius:22px;
+        padding:20px;
+        margin-bottom:20px;
+
+        box-shadow:
+        0 6px 20px rgba(0,0,0,.12);
+
+    }
+
+
+    .title{
+
+        font-size:22px;
+        margin-bottom:10px;
+
+    }
+
+
+    .card div[style]{
+
+        font-size:16px!important;
+
+    }
+
+
+    .status{
+
+        font-size:18px;
+        padding:14px;
+        margin:15px 0;
+
+    }
+
+
+    ul{
+
+        padding:15px 30px;
+        margin:15px 0;
+
+    }
+
+
+    li{
+
+        font-size:18px;
+        padding:10px 0;
+
+    }
+
+
+    .total{
+
+        font-size:28px;
+        font-weight:800;
+
+    }
+
+
+    .card button{
+
+        height:60px;
+        font-size:18px;
+        border-radius:15px;
+
+    }
+
+
+    #orders p{
+
+        font-size:17px;
+
+    }
+
+}
+.dashboard{
     display:flex;
-    justify-content:flex-end;
-    padding:15px 20px;
-}
-
-.menu-btn{
-    background:#198754;
-    color:#fff;
-    border:none;
-    padding:12px 20px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-    font-weight:bold;
-    transition:.25s;
-}
-
-.menu-btn:hover{
-    background:#157347;
-    transform:translateY(-2px);
+    gap:10px;
+    justify-content:center;
+    margin:20px;
 }
     </style>
 
@@ -130,7 +374,7 @@
 </button>
 
 </div>
-<div style="display:flex;gap:10px;justify-content:center;margin:20px">
+<div class="dashboard">
 
 <div class="card" style="width:180px;text-align:center">
 
