@@ -309,16 +309,19 @@ loadMenu();
 
 saveBtn.onclick=async()=>{
 
-    const image = document.getElementById("image");
+    const nameInput = document.getElementById("name");
+    const priceInput = document.getElementById("price");
+    const categoryInput = document.getElementById("category");
+    const imageInput = document.getElementById("image");
 
     const form = new FormData();
 
-    form.append("name", name.value);
-    form.append("price", price.value);
-    form.append("category", category.value);
+    form.append("name", nameInput.value);
+    form.append("price", priceInput.value);
+    form.append("category", categoryInput.value);
 
-    if (image.files.length > 0) {
-        form.append("image", image.files[0]);
+    if(imageInput.files.length > 0){
+        form.append("image", imageInput.files[0]);
     }
 
     if(editing){

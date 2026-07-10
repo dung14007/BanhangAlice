@@ -20,7 +20,7 @@ router.post("/", upload.single("image"), async(req,res)=>{
 
     const food = await Menu.create({
 
-        name:req.body.name,
+        name:req.body.name || req.body.title || req.body.foodName,
 
         price:req.body.price,
 
