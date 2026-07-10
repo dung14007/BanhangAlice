@@ -153,7 +153,22 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const socket = io();
+socket.on("newOrder", (data)=>{
 
+
+    console.log("Đơn mới:", data);
+
+
+    alert(
+        "🔔 Có đơn mới\n"+
+        "Bàn: "+data.order.table+
+        "\nKhách: "+data.order.customer
+    );
+
+
+    loadOrders(); // cập nhật danh sách đơn
+
+});
 const audio = new Audio(
     "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"
 );
