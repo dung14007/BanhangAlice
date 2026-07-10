@@ -1,0 +1,244 @@
+[
+  {
+    "table": 5,
+    "note": "Ít cay",
+    "items": [
+      {
+        "id": 1,
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      },
+      {
+        "id": 4,
+        "name": "Trà đào",
+        "qty": 1,
+        "price": 30000
+      }
+    ],
+    "total": 140000,
+    "id": 1783611956466,
+    "createdAt": "2026-07-09T15:45:56.466Z",
+    "status": "pending"
+  },
+  {
+    "table": 5,
+    "note": "Ít cay",
+    "items": [
+      {
+        "id": 1,
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      },
+      {
+        "id": 4,
+        "name": "Trà đào",
+        "qty": 1,
+        "price": 30000
+      }
+    ],
+    "total": 140000,
+    "id": 1783612611694,
+    "createdAt": "2026-07-09T15:56:51.694Z",
+    "status": "pending"
+  },
+  {
+    "table": 5,
+    "note": "Ít cay",
+    "items": [
+      {
+        "id": 1,
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      },
+      {
+        "id": 4,
+        "name": "Trà đào",
+        "qty": 1,
+        "price": 30000
+      }
+    ],
+    "total": 140000,
+    "id": 1783612627634,
+    "createdAt": "2026-07-09T15:57:07.634Z",
+    "status": "pending"
+  },
+  {
+    "table": 4,
+    "note": "Ít cay",
+    "items": [
+      {
+        "id": 1,
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      },
+      {
+        "id": 4,
+        "name": "Trà đào",
+        "qty": 1,
+        "price": 30000
+      }
+    ],
+    "total": 140000,
+    "id": 1783612735041,
+    "createdAt": "2026-07-09T15:58:55.041Z",
+    "status": "pending"
+  },
+  {
+    "table": 3,
+    "note": "Ít cay",
+    "items": [
+      {
+        "id": 1,
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      },
+      {
+        "id": 4,
+        "name": "Trà đào",
+        "qty": 1,
+        "price": 30000
+      }
+    ],
+    "total": 140000,
+    "id": 1783612994096,
+    "createdAt": "2026-07-09T16:03:14.096Z",
+    "status": "pending"
+  },
+  {
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "0",
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      }
+    ],
+    "total": 110000,
+    "id": 1783614639088,
+    "createdAt": "2026-07-09T16:30:39.088Z",
+    "status": "pending"
+  },
+  {
+    "customer": "dung",
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "3",
+        "name": "Trà đào",
+        "qty": 2,
+        "price": 30000
+      }
+    ],
+    "total": 60000,
+    "id": 1783643772301,
+    "createdAt": "2026-07-10T00:36:12.301Z",
+    "status": "pending"
+  },
+  {
+    "customer": "dung",
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "1",
+        "name": "Mì Quảng",
+        "qty": 2,
+        "price": 45000
+      }
+    ],
+    "total": 90000,
+    "id": 1783644109201,
+    "createdAt": "2026-07-10T00:41:49.201Z",
+    "status": "pending"
+  },
+  {
+    "customer": "dung",
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "0",
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      },
+      {
+        "id": "2",
+        "name": "Bò lúc lắc",
+        "qty": 1,
+        "price": 89000
+      }
+    ],
+    "total": 199000,
+    "id": 1783644199289,
+    "createdAt": "2026-07-10T00:43:19.289Z",
+    "date": "10/7/2026",
+    "time": "07:43:19",
+    "status": "paid"
+  },
+  {
+    "customer": "dung",
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "3",
+        "name": "Trà đào",
+        "qty": 2,
+        "price": 30000
+      }
+    ],
+    "total": 60000,
+    "id": 1783644685781,
+    "createdAt": "2026-07-10T00:51:25.781Z",
+    "date": "10/7/2026",
+    "time": "07:51:25",
+    "status": "paid"
+  },
+  {
+    "customer": "dung",
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "2",
+        "name": "Bò lúc lắc",
+        "qty": 2,
+        "price": 89000
+      }
+    ],
+    "total": 178000,
+    "id": 1783645125857,
+    "createdAt": "2026-07-10T00:58:45.857Z",
+    "date": "10/7/2026",
+    "time": "07:58:45",
+    "status": "paid"
+  },
+  {
+    "customer": "dung",
+    "table": "2",
+    "note": "",
+    "items": [
+      {
+        "id": "0",
+        "name": "Cơm gà",
+        "qty": 2,
+        "price": 55000
+      }
+    ],
+    "total": 110000,
+    "id": 1783645371660,
+    "createdAt": "2026-07-10T01:02:51.660Z",
+    "date": "10/7/2026",
+    "time": "08:02:51",
+    "status": "paid"
+  }
+]

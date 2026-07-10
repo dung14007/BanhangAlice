@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý đơn hàng</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin: 0;
+            padding: 20px;
+            background: #ff6b00;
+            color: white;
+            text-align: center;
+        }
+
+        #orders {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.1);
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff6b00;
+        }
+
+        ul{
+            padding-left:20px;
+        }
+
+        .total{
+            font-size:18px;
+            color:red;
+            font-weight:bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>🍽️ Đơn hàng</h1>
+
+<div id="orders"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+
+const audio = new Audio(
+    "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"
+);
+
+async function loadOrders() {
+
+    const res = await fetch("/api/orders");
+    const data = await res.json();
+
+    let html = "";
+
+    data.reverse().forEach(order => {
+
+        let actionButton = "";
+
+        if (order.status === "pending") {
+            actionButton = `
+                <button onclick="changeStatus(${order.id},'processing')">
+                    ✔ Xác nhận
+                </button>
+            `;
+        } else if (order.status === "processing") {
+            actionButton = `
+                <button onclick="changeStatus(${order.id},'completed')">
+                    🍳 Hoàn thành
+                </button>
+            `;
+        } else if (order.status === "completed") {
+            actionButton = `
+                <button onclick="changeStatus(${order.id},'paid')">
+                    💰 Đã thanh toán
+                </button>
+            `;
+        }
+
+        html += `
+        <div class="card">
+
+            <div class="title">
+                👤 ${order.customer}
+            </div>
+
+            <div class="title">
+                🪑 Bàn ${order.table}
+            </div>
+
+            <div style="font-size:14px;color:#666;margin:8px 0;">
+                📅 ${order.date} &nbsp; 🕒 ${order.time}
+            </div>
+
+            <p>${order.note || ""}</p>
+
+            <div style="margin:10px 0;font-weight:bold">
+                ${statusText(order.status)}
+            </div>
+
+            <ul>
+                ${order.items.map(item => `
+                    <li>${item.name} x ${item.qty}</li>
+                `).join("")}
+            </ul>
+
+            <div class="total">
+                ${Number(order.total).toLocaleString()} đ
+            </div>
+
+            <div style="margin-top:15px">
+                ${actionButton}
+            </div>
+
+        </div>
+        `;
+
+    });
+
+    document.getElementById("orders").innerHTML = html;
+
+}
+
+loadOrders();
+
+socket.on("new-order", (order) => {
+
+    console.log("Có đơn mới", order);
+
+    audio.play();
+
+    loadOrders();
+
+});
+socket.on("order-status",()=>{
+
+    loadOrders();
+
+});
+function statusText(status){
+
+    switch(status){
+
+        case "pending":
+            return "🟡 Chờ xác nhận";
+
+        case "processing":
+            return "🔵 Đang chế biến";
+
+        case "completed":
+            return "🟢 Hoàn thành";
+
+        case "paid":
+            return "💰 Đã thanh toán";
+
+        default:
+            return "🟡 Chờ xác nhận";
+
+    }
+
+}
+async function changeStatus(id,status){
+
+    await fetch("/api/orders/"+id+"/status",{
+
+        method:"PUT",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            status
+        })
+
+    });
+
+    loadOrders();
+
+}
+</script>
+
+
+</body>
+
+</html>

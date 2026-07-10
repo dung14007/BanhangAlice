@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Cơm gà",
+    "price": 55000,
+    "image": "https://picsum.photos/300/200?1",
+    "category": "Món chính"
+  },
+  {
+    "id": 2,
+    "name": "Mì Quảng",
+    "price": 45000,
+    "image": "https://picsum.photos/300/200?2",
+    "category": "Món chính"
+  },
+  {
+    "id": 3,
+    "name": "Bò lúc lắc",
+    "price": 89000,
+    "image": "https://picsum.photos/300/200?3",
+    "category": "Món chính"
+  },
+  {
+    "id": 4,
+    "name": "Trà đào",
+    "price": 30000,
+    "image": "https://picsum.photos/300/200?4",
+    "category": "Đồ uống"
+  }
+]

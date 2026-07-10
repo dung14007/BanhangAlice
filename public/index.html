@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Menu Nhà Hàng</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4
+        }
+
+        header {
+            background: #d35400;
+            color: #fff;
+            padding: 18px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: sticky;
+            top: 0
+        }
+
+        .search {
+            padding: 12px;
+            background: #fff
+        }
+
+        .search input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            padding: 16px
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .1)
+        }
+
+        .card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover
+        }
+
+        .info {
+            padding: 12px
+        }
+
+        .price {
+            color: #d35400;
+            font-weight: bold
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #d35400;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+        .cart {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, .2)
+        }
+        .modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.modal-box{
+
+    width:90%;
+    max-width:350px;
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    text-align:center;
+}
+
+.modal-box h2{
+
+    margin-top:0;
+
+}
+
+.modal-box input{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    margin:20px 0;
+
+    font-size:18px;
+
+    text-align:center;
+
+}
+
+.modal-box button{
+
+    width:100%;
+
+    padding:14px;
+
+    background:#ff6b00;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}
+    </style>
+</head>
+
+<body>
+    <div id="tableModal" class="modal">
+
+    <div class="modal-box">
+
+        <h2>🍽️ Chào mừng</h2>
+        <p>Nhập tên của bạn</p>
+
+        <input
+            type="text"
+            id="customerName"
+            placeholder="Ví dụ: Nguyễn Văn A"
+        >
+        <p>Vui lòng nhập số bàn</p>
+
+        <input
+            type="number"
+            id="tableInput"
+            placeholder="Ví dụ: 12"
+        >
+
+        <button id="startOrder">
+            Bắt đầu gọi món
+        </button>
+
+    </div>
+
+</div>
+    <header>🍽️ MENU NHÀ HÀNG</header>
+    <div style="background:#fff;padding:10px;text-align:center;font-weight:bold">
+    🪑 Bàn: <span id="tableNumber"></span> <div style="font-size:18px;font-weight:bold">
+        👤 <span id="customerNameShow"></span>
+    </div>
+    <button onclick="changeTable()" style="width:auto;margin-left:10px;padding:5px 10px">
+        Đổi bàn
+    </button>
+</div>
+    <div class="search"><input id="search" placeholder="Tìm món..."></div>
+    <div class="grid" id="grid"></div>
+    <div class="cart">
+        <div><b id="count">0</b> món - <b id="total">0đ</b></div><button style="width:auto;padding:10px 18px" onclick="placeOrder()">Đặt đơn
+            hàng</button>
+    </div>
+    <script>
+        const modal = document.getElementById("tableModal");
+        const tableInput = document.getElementById("tableInput");   
+        const startBtn = document.getElementById("startOrder");
+        const savedTable = localStorage.getItem("table");
+        const customerName = document.getElementById("customerName");
+        const tableNumber = document.getElementById("tableNumber");
+        const savedName = localStorage.getItem("customerName");
+        const customerNameShow = document.getElementById("customerNameShow");
+                    if(savedName){
+                customerNameShow.textContent = savedName;
+            }
+            if(savedTable && savedName){
+
+    tableNumber.textContent = savedTable;
+
+    customerNameShow.textContent = savedName;
+
+    modal.style.display = "none";
+
+}
+            if(savedTable){
+                tableNumber.textContent = savedTable;
+            }
+            if(savedTable){
+
+                modal.style.display="none";
+
+            }
+        startBtn.onclick = () => {
+
+            const table = tableInput.value.trim();
+            const name = customerName.value.trim();
+             console.log(name); 
+            if(name === ""){
+                alert("Vui lòng nhập tên");
+                return;
+            }
+            if(table===""){
+
+                alert("Vui lòng nhập số bàn");
+
+                return;
+
+            }
+            localStorage.setItem("customerName", name);
+            localStorage.setItem("table",table);
+            customerNameShow.textContent = name;
+            tableNumber.textContent = table;
+            modal.style.display="none";
+
+        };
+        const foods = [
+            { name: "Cơm gà", price: 55000, img: "https://picsum.photos/300/200?1" },
+            { name: "Mì Quảng", price: 45000, img: "https://picsum.photos/300/200?2" },
+            { name: "Bò lúc lắc", price: 89000, img: "https://picsum.photos/300/200?3" },
+            { name: "Trà đào", price: 30000, img: "https://picsum.photos/300/200?4" }
+        ];
+        let cart = {};
+        function render(list) {
+            grid.innerHTML = "";
+            list.forEach((f, i) => {
+                grid.innerHTML += `<div class=card><img src="${f.img}"><div class=info><h3>${f.name}</h3><div class=price>${f.price.toLocaleString()}đ</div><br><button onclick="add(${i})">Thêm</button></div></div>`;
+            });
+        }
+        function changeTable(){
+
+            localStorage.removeItem("table");
+                localStorage.removeItem("customerName");
+            location.reload();
+
+        }
+        function add(i) {
+            cart[i] = (cart[i] || 0) + 1;
+            let c = 0, t = 0;
+            for (let k in cart) { c += cart[k]; t += cart[k] * foods[k].price; }
+            count.textContent = c; total.textContent = t.toLocaleString() + "đ";
+        }
+        search.oninput = e => {
+            const k = e.target.value.toLowerCase();
+            render(foods.filter(f => f.name.toLowerCase().includes(k)));
+        }
+        render(foods);
+        async function placeOrder(){
+
+    if(Object.keys(cart).length===0){
+
+        alert("Chưa chọn món");
+
+        return;
+
+    }
+
+    const items=[];
+
+    let totalMoney=0;
+
+    for(const i in cart){
+
+        items.push({
+
+            id:i,
+
+            name:foods[i].name,
+
+            qty:cart[i],
+
+            price:foods[i].price
+
+        });
+
+        totalMoney+=foods[i].price*cart[i];
+
+    }
+
+    const res=await fetch("/api/orders",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            customer: localStorage.getItem("customerName"),
+            table:localStorage.getItem("table"),
+
+            note:"",
+
+            items,
+
+            total:totalMoney
+
+        })
+
+    });
+
+    const data=await res.json();
+
+    if(data.success){
+
+    alert("Đặt món thành công!");
+
+    cart = {};
+    render(foods);
+
+    count.textContent = 0;
+
+    total.textContent = "0đ";
+           location.href="/my-order.html";
+}else{
+
+    alert("Đặt món thất bại");
+
+}
+
+}
+
+    </script>
+</body>
+
+</html>

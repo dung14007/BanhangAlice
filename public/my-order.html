@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Theo dõi đơn hàng</title>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        *{
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            margin:0;
+            background:#f5f5f5;
+        }
+
+        header{
+            background:#ff6b00;
+            color:#fff;
+            padding:20px;
+            text-align:center;
+            font-size:28px;
+            font-weight:bold;
+        }
+
+        .card{
+            max-width:700px;
+            margin:30px auto;
+            background:#fff;
+            border-radius:15px;
+            padding:25px;
+            box-shadow:0 3px 12px rgba(0,0,0,.15);
+        }
+
+        .title{
+            font-size:28px;
+            color:#ff6b00;
+            font-weight:bold;
+        }
+
+        .info{
+            margin-top:10px;
+            font-size:18px;
+        }
+
+        .status{
+            margin:25px 0;
+            padding:15px;
+            border-radius:10px;
+            font-size:22px;
+            font-weight:bold;
+            text-align:center;
+            background:#fff3cd;
+        }
+
+        ul{
+            padding-left:22px;
+        }
+
+        li{
+            margin:10px 0;
+            font-size:18px;
+        }
+
+        .total{
+            margin-top:25px;
+            text-align:right;
+            font-size:28px;
+            color:red;
+            font-weight:bold;
+        }
+
+        .time{
+            color:#777;
+            margin-top:10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+🍽️ Theo dõi đơn hàng
+</header>
+
+<div class="card">
+
+    <div class="title" id="customer"></div>
+
+    <div class="info" id="table"></div>
+
+    <div class="time" id="time"></div>
+
+    <div class="status" id="status"></div>
+
+    <ul id="items"></ul>
+
+    <div class="total" id="total"></div>
+
+</div>
+
+<script>
+
+const socket=io();
+
+function statusText(status){
+
+    switch(status){
+
+        case "pending":
+            return "🟡 Chờ xác nhận";
+
+        case "processing":
+            return "🔵 Đang chế biến";
+
+        case "completed":
+            return "🟢 Hoàn thành";
+
+        case "paid":
+            return "💰 Đã thanh toán";
+
+        default:
+            return "🟡 Chờ xác nhận";
+
+    }
+
+}
+
+async function loadOrder(){
+
+    const customer=localStorage.getItem("customerName");
+    const table=localStorage.getItem("table");
+
+    if(!customer || !table){
+
+        alert("Không tìm thấy thông tin đơn.");
+
+        location.href="/index.html";
+
+        return;
+
+    }
+
+    const res=await fetch("/api/orders/latest/"+table+"/"+customer);
+
+    const order=await res.json();
+
+    if(!order){
+
+        document.getElementById("status").innerHTML="Không tìm thấy đơn.";
+
+        return;
+
+    }
+
+    customer.innerHTML;
+
+    document.getElementById("customer").innerHTML="👤 "+order.customer;
+
+    document.getElementById("table").innerHTML="🪑 Bàn "+order.table;
+
+    document.getElementById("time").innerHTML=
+        "📅 "+order.date+" &nbsp;&nbsp; 🕒 "+order.time;
+
+    document.getElementById("status").innerHTML=statusText(order.status);
+
+    document.getElementById("items").innerHTML=
+        order.items.map(item=>`
+            <li>${item.name} x ${item.qty}</li>
+        `).join("");
+
+    document.getElementById("total").innerHTML=
+        Number(order.total).toLocaleString()+" đ";
+
+}
+
+loadOrder();
+
+socket.on("order-status",()=>{
+
+    loadOrder();
+
+});
+
+socket.on("new-order",()=>{
+
+    loadOrder();
+
+});
+
+setInterval(loadOrder,3000);
+
+</script>
+
+</body>
+</html>
