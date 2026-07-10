@@ -54,7 +54,7 @@ router.post("/",async(req,res)=>{
             createdAt:now
 
         });
-        const io = req.app.get("io");
+        
         io.emit("newOrder", {
             message:"Có đơn hàng mới",
             order
