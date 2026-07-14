@@ -1,202 +1,334 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f97316">
     <title>Theo dõi đơn hàng</title>
+    <style>
+        :root {
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --ink: #172033;
+            --muted: #667085;
+            --line: #e7eaf0;
+            --surface: #fff;
+            --page: #f6f7fb;
+            --green: #10b981;
+            --shadow: 0 8px 24px rgba(23, 32, 51, .08);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--page);
+            color: var(--ink);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        button { font: inherit; }
+
+        .app-header {
+            color: #fff;
+            background: linear-gradient(135deg, #fb7c21, #f15a0a);
+            box-shadow: 0 4px 18px rgba(234, 88, 12, .22);
+        }
+        .header-inner,
+        main {
+            width: min(720px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .brand { display: flex; align-items: center; gap: 11px; }
+        .brand-icon {
+            width: 41px;
+            height: 41px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, .18);
+            font-size: 21px;
+        }
+        .brand h1 { margin: 0; font-size: 20px; }
+        .brand p { margin: 2px 0 0; opacity: .85; font-size: 12px; }
+        .back-btn {
+            padding: 9px 12px;
+            border: 1px solid rgba(255, 255, 255, .28);
+            border-radius: 10px;
+            color: #fff;
+            background: rgba(255, 255, 255, .14);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        main { padding: 24px 0 40px; }
+        .order-card {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+        .order-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        .eyebrow { margin: 0 0 5px; color: var(--muted); font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .04em; }
+        .customer { margin: 0 0 6px; font-size: 21px; }
+        .order-time { color: var(--muted); font-size: 13px; }
+        .table-box {
+            min-width: 66px;
+            height: 62px;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            border-radius: 13px;
+            color: var(--primary-dark);
+            background: #fff1e7;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .table-box strong { display: block; font-size: 23px; line-height: 1.05; }
+
+        .status-section { padding: 22px 20px 20px; }
+        .status-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+        .status-heading h2 { margin: 0; font-size: 17px; }
+        .live-badge { display: flex; align-items: center; gap: 5px; color: #047857; font-size: 11px; font-weight: 700; }
+        .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(16, 185, 129, .12); }
+
+        .progress { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); }
+        .progress::before,
+        .progress-bar {
+            content: "";
+            position: absolute;
+            left: 12.5%;
+            right: 12.5%;
+            top: 15px;
+            height: 3px;
+            border-radius: 3px;
+        }
+        .progress::before { background: #e7eaf0; }
+        .progress-bar { right: auto; width: 0; background: var(--primary); transition: width .35s ease; }
+        .step { position: relative; z-index: 1; text-align: center; color: #98a2b3; }
+        .step-dot {
+            width: 31px;
+            height: 31px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 8px;
+            border: 3px solid var(--surface);
+            border-radius: 50%;
+            background: #dfe3e9;
+            box-shadow: 0 0 0 1px #dfe3e9;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .step-label { display: block; font-size: 11px; font-weight: 650; }
+        .step.done, .step.active { color: var(--primary-dark); }
+        .step.done .step-dot, .step.active .step-dot { color: #fff; background: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+        .step.active .step-dot { box-shadow: 0 0 0 4px rgba(249, 115, 22, .14); }
+        .current-status {
+            margin-top: 20px;
+            padding: 11px 13px;
+            border-radius: 10px;
+            color: #9a4b0a;
+            background: #fff4e8;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 750;
+        }
+        .current-status.paid { color: #047857; background: #dff8ee; }
+
+        .order-content { padding: 0 20px 20px; }
+        .section-title { margin: 0 0 10px; font-size: 15px; }
+        .items { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+        .items li {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 14px;
+        }
+        .item-name { font-weight: 650; }
+        .item-qty { color: var(--muted); font-weight: 700; }
+        .note {
+            display: none;
+            margin: 14px 0 0;
+            padding: 10px 12px;
+            border-left: 3px solid #fbbf24;
+            border-radius: 8px;
+            color: #7c5b13;
+            background: #fffbeb;
+            font-size: 13px;
+        }
+        .total-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding-top: 18px; }
+        .total-label { color: var(--muted); font-size: 13px; }
+        .total { color: var(--primary-dark); font-size: 25px; font-weight: 850; }
+
+        .help-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, .7);
+            font-size: 13px;
+        }
+        .help-icon { width: 34px; height: 34px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 10px; background: #eef1f5; }
+
+        .state-card { padding: 48px 20px; text-align: center; }
+        .state-icon { display: block; margin-bottom: 10px; font-size: 38px; }
+        .state-card h2 { margin: 0 0 6px; font-size: 20px; }
+        .state-card p { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+        .primary-btn { padding: 11px 15px; border: 0; border-radius: 10px; color: #fff; background: var(--primary); cursor: pointer; font-weight: 750; }
+
+        @media (max-width: 600px) {
+            .header-inner, main { width: calc(100% - 16px); }
+            .header-inner { min-height: 62px; }
+            .brand { gap: 8px; }
+            .brand-icon { width: 34px; height: 34px; border-radius: 10px; font-size: 18px; }
+            .brand h1 { font-size: 16px; }
+            .brand p { display: none; }
+            .back-btn { padding: 8px 9px; border-radius: 9px; font-size: 11px; }
+            main { padding: 12px 0 24px; }
+            .order-card { border-radius: 14px; box-shadow: 0 4px 14px rgba(23, 32, 51, .07); }
+            .order-head { padding: 15px; }
+            .customer { font-size: 18px; }
+            .order-time { font-size: 11px; }
+            .table-box { min-width: 56px; height: 54px; border-radius: 11px; }
+            .table-box strong { font-size: 20px; }
+            .status-section { padding: 17px 12px 16px; }
+            .status-heading { margin-bottom: 17px; }
+            .status-heading h2 { font-size: 15px; }
+            .progress::before, .progress-bar { top: 13px; }
+            .step-dot { width: 27px; height: 27px; margin-bottom: 7px; font-size: 10px; }
+            .step-label { font-size: 9px; line-height: 1.2; }
+            .current-status { margin-top: 16px; padding: 10px; font-size: 13px; }
+            .order-content { padding: 0 15px 16px; }
+            .items li { padding: 11px 0; font-size: 13px; }
+            .total { font-size: 22px; }
+            .help-card { margin-top: 10px; padding: 12px; font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand"><div class="brand-icon">🍽️</div><div><h1>Theo dõi đơn hàng</h1><p>Cập nhật trạng thái theo thời gian thực</p></div></div>
+            <button class="back-btn" onclick="location.href='/index.html'">← Thực đơn</button>
+        </div>
+    </header>
+
+    <main>
+        <article class="order-card" id="orderCard">
+            <div class="state-card"><span class="state-icon">⏳</span><h2>Đang tải đơn hàng</h2><p>Vui lòng chờ trong giây lát...</p></div>
+        </article>
+        <div class="help-card" id="helpCard" hidden><div class="help-icon">🔔</div><div>Trang sẽ tự động cập nhật khi nhà hàng thay đổi trạng thái đơn.</div></div>
+    </main>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const orderCard = document.getElementById("orderCard");
+        const helpCard = document.getElementById("helpCard");
+        const statuses = ["pending", "processing", "completed", "paid"];
+        let lastOrderSignature = "";
 
-    <style>
-        *{
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
+        const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+        })[char]);
+
+        function statusText(status) {
+            return ({
+                pending: "Đơn đang chờ nhà hàng xác nhận",
+                processing: "Nhà hàng đang chuẩn bị món",
+                completed: "Món đã hoàn thành, sắp được phục vụ",
+                paid: "Đơn hàng đã thanh toán"
+            })[status] || "Đơn đang chờ xác nhận";
         }
 
-        body{
-            margin:0;
-            background:#f5f5f5;
+        async function loadOrder() {
+            const customer = localStorage.getItem("customerName");
+            const table = localStorage.getItem("table");
+            if (!customer || !table) {
+                renderState("📋", "Chưa có thông tin đơn", "Hãy chọn món để tạo đơn hàng mới.", true);
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/orders/latest/${encodeURIComponent(table)}/${encodeURIComponent(customer)}`);
+                if (!res.ok) throw new Error();
+                const order = await res.json();
+                if (!order) {
+                    renderState("🍽️", "Chưa tìm thấy đơn hàng", "Bạn có thể quay lại thực đơn để chọn món.", true);
+                    return;
+                }
+
+                const signature = `${order._id}-${order.status}-${order.updatedAt || ""}`;
+                if (signature === lastOrderSignature) return;
+                lastOrderSignature = signature;
+                renderOrder(order);
+            } catch {
+                renderState("⚠️", "Không tải được đơn hàng", "Vui lòng kiểm tra kết nối và thử lại.", false);
+            }
         }
 
-        header{
-            background:#ff6b00;
-            color:#fff;
-            padding:20px;
-            text-align:center;
-            font-size:28px;
-            font-weight:bold;
+        function renderOrder(order) {
+            const currentIndex = Math.max(0, statuses.indexOf(order.status));
+            const progressWidth = `${(currentIndex / (statuses.length - 1)) * 75}%`;
+            const items = Array.isArray(order.items) ? order.items : [];
+            const steps = [
+                ["pending", "1", "Chờ xác nhận"],
+                ["processing", "2", "Đang chế biến"],
+                ["completed", "3", "Hoàn thành"],
+                ["paid", "✓", "Đã thanh toán"]
+            ];
+
+            orderCard.innerHTML = `
+                <div class="order-head">
+                    <div><p class="eyebrow">Đơn hàng của</p><h2 class="customer">${escapeHtml(order.customer || "Khách hàng")}</h2><div class="order-time">${escapeHtml(order.date)} · ${escapeHtml(order.time)}</div></div>
+                    <div class="table-box">BÀN<strong>${escapeHtml(order.table)}</strong></div>
+                </div>
+                <section class="status-section">
+                    <div class="status-heading"><h2>Trạng thái đơn</h2><span class="live-badge"><span class="live-dot"></span>Đang cập nhật</span></div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width:${progressWidth}"></div>
+                        ${steps.map((step, index) => `<div class="step ${index < currentIndex ? "done" : index === currentIndex ? "active" : ""}"><div class="step-dot">${index < currentIndex ? "✓" : step[1]}</div><span class="step-label">${step[2]}</span></div>`).join("")}
+                    </div>
+                    <div class="current-status ${order.status === "paid" ? "paid" : ""}">${statusText(order.status)}</div>
+                </section>
+                <section class="order-content">
+                    <h3 class="section-title">Món đã gọi</h3>
+                    <ul class="items">${items.map(item => `<li><span class="item-name">${escapeHtml(item.name)}</span><span class="item-qty">× ${escapeHtml(item.qty)}</span></li>`).join("")}</ul>
+                    ${order.note ? `<p class="note" style="display:block">📝 ${escapeHtml(order.note)}</p>` : ""}
+                    <div class="total-row"><span class="total-label">Tổng thanh toán</span><strong class="total">${Number(order.total || 0).toLocaleString("vi-VN")} đ</strong></div>
+                </section>`;
+            helpCard.hidden = false;
         }
 
-        .card{
-            max-width:700px;
-            margin:30px auto;
-            background:#fff;
-            border-radius:15px;
-            padding:25px;
-            box-shadow:0 3px 12px rgba(0,0,0,.15);
+        function renderState(icon, title, message, showMenuButton) {
+            orderCard.innerHTML = `<div class="state-card"><span class="state-icon">${icon}</span><h2>${title}</h2><p>${message}</p>${showMenuButton ? '<button class="primary-btn" onclick="location.href=\'/index.html\'">Xem thực đơn</button>' : '<button class="primary-btn" onclick="loadOrder()">Thử lại</button>'}</div>`;
+            helpCard.hidden = true;
         }
 
-        .title{
-            font-size:28px;
-            color:#ff6b00;
-            font-weight:bold;
-        }
-
-        .info{
-            margin-top:10px;
-            font-size:18px;
-        }
-
-        .status{
-            margin:25px 0;
-            padding:15px;
-            border-radius:10px;
-            font-size:22px;
-            font-weight:bold;
-            text-align:center;
-            background:#fff3cd;
-        }
-
-        ul{
-            padding-left:22px;
-        }
-
-        li{
-            margin:10px 0;
-            font-size:18px;
-        }
-
-        .total{
-            margin-top:25px;
-            text-align:right;
-            font-size:28px;
-            color:red;
-            font-weight:bold;
-        }
-
-        .time{
-            color:#777;
-            margin-top:10px;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<header>
-🍽️ Theo dõi đơn hàng
-</header>
-
-<div class="card">
-
-    <div class="title" id="customer"></div>
-
-    <div class="info" id="table"></div>
-
-    <div class="time" id="time"></div>
-
-    <div class="status" id="status"></div>
-
-    <ul id="items"></ul>
-
-    <div class="total" id="total"></div>
-
-</div>
-
-<script>
-
-const socket=io();
-
-function statusText(status){
-
-    switch(status){
-
-        case "pending":
-            return "🟡 Chờ xác nhận";
-
-        case "processing":
-            return "🔵 Đang chế biến";
-
-        case "completed":
-            return "🟢 Hoàn thành";
-
-        case "paid":
-            return "💰 Đã thanh toán";
-
-        default:
-            return "🟡 Chờ xác nhận";
-
-    }
-
-}
-
-async function loadOrder(){
-
-    const customer=localStorage.getItem("customerName");
-    const table=localStorage.getItem("table");
-
-    if(!customer || !table){
-
-        alert("Không tìm thấy thông tin đơn.");
-
-        location.href="/index.html";
-
-        return;
-
-    }
-
-    const res=await fetch("/api/orders/latest/"+table+"/"+customer);
-
-    const order=await res.json();
-
-    if(!order){
-
-        document.getElementById("status").innerHTML="Không tìm thấy đơn.";
-
-        return;
-
-    }
-
-    customer.innerHTML;
-
-    document.getElementById("customer").innerHTML="👤 "+order.customer;
-
-    document.getElementById("table").innerHTML="🪑 Bàn "+order.table;
-
-    document.getElementById("time").innerHTML=
-        "📅 "+order.date+" &nbsp;&nbsp; 🕒 "+order.time;
-
-    document.getElementById("status").innerHTML=statusText(order.status);
-
-    document.getElementById("items").innerHTML=
-        order.items.map(item=>`
-            <li>${item.name} x ${item.qty}</li>
-        `).join("");
-
-    document.getElementById("total").innerHTML=
-        Number(order.total).toLocaleString()+" đ";
-
-}
-
-loadOrder();
-
-socket.on("order-status",()=>{
-
-    loadOrder();
-
-});
-
-socket.on("new-order",()=>{
-
-    loadOrder();
-
-});
-
-setInterval(loadOrder,3000);
-
-</script>
-
+        socket.on("order-status", loadOrder);
+        socket.on("new-order", loadOrder);
+        loadOrder();
+        setInterval(loadOrder, 5000);
+    </script>
 </body>
 </html>

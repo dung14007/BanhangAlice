@@ -1,689 +1,687 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Menu Nhà Hàng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f97316">
+    <title>Thực đơn nhà hàng</title>
     <style>
-        *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:"Segoe UI",Arial,sans-serif;
-}
-
-
-body{
-
-    background:#fafafa;
-
-    color:#333;
-
-    padding-bottom:80px;
-
-}
-
-
-
-/* HEADER */
-
-header{
-
-    background:linear-gradient(135deg,#ff7a00,#ff4500);
-
-    color:white;
-
-    padding:20px;
-
-    text-align:center;
-
-    font-size:24px;
-
-    font-weight:700;
-
-    position:sticky;
-
-    top:0;
-
-    z-index:100;
-
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
-
-}
-
-
-
-/* thông tin bàn */
-
-
-body>div:nth-of-type(2){
-
-    background:white;
-
-    margin:12px;
-
-    border-radius:15px;
-
-    padding:15px!important;
-
-    box-shadow:0 3px 10px rgba(0,0,0,.08);
-
-}
-
-
-
-#tableNumber{
-
-    color:#ff6b00;
-
-}
-
-
-
-#customerNameShow{
-
-    color:#333;
-
-}
-
-
-
-/* search */
-
-.search{
-
-    padding:12px;
-
-}
-
-
-.search input{
-
-    width:100%;
-
-    padding:14px 18px;
-
-    border-radius:30px;
-
-    border:1px solid #ddd;
-
-    outline:none;
-
-    font-size:16px;
-
-    background:white;
-
-}
-
-
-
-/* MENU GRID */
-
-
-.grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(2,1fr);
-
-    gap:12px;
-
-    padding:12px;
-
-}
-
-
-
-.card{
-
-    background:white;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-
-    transition:.2s;
-
-}
-
-
-
-.card:active{
-
-    transform:scale(.96);
-
-}
-
-
-
-.card img{
-
-    width:100%;
-
-    height:140px;
-
-    object-fit:cover;
-
-}
-
-
-
-.info{
-
-    padding:12px;
-
-}
-
-
-
-.info h3{
-
-    font-size:17px;
-
-    margin-bottom:8px;
-
-    height:42px;
-
-}
-
-
-
-.price{
-
-    color:#ff5500;
-
-    font-size:17px;
-
-    font-weight:700;
-
-    margin-bottom:10px;
-
-}
-
-
-
-/* BUTTON */
-
-button{
-
-    border:none;
-
-    background:#ff6b00;
-
-    color:white;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-}
-
-
-
-.card button{
-
-    width:100%;
-
-}
-
-
-
-/* CART */
-
-.cart{
-
-    position:fixed;
-
-    bottom:0;
-
-    left:0;
-
-    right:0;
-
-    background:white;
-
-    padding:12px 16px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    box-shadow:0 -5px 20px rgba(0,0,0,.15);
-
-    z-index:999;
-
-}
-
-
-
-.cart button{
-
-    width:auto!important;
-
-    padding:12px 22px!important;
-
-}
-
-
-
-/* MODAL */
-
-.modal{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.65);
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    z-index:9999;
-
-}
-
-
-
-.modal-box{
-
-    width:90%;
-
-    background:white;
-
-    border-radius:25px;
-
-    padding:30px 20px;
-
-    text-align:center;
-
-    animation:show .3s;
-
-}
-
-
-
-@keyframes show{
-
-    from{
-
-        transform:translateY(50px);
-
-        opacity:0;
-
-    }
-
-    to{
-
-        transform:none;
-
-        opacity:1;
-
-    }
-
-}
-
-
-
-.modal-box h2{
-
-    color:#ff6b00;
-
-    margin-bottom:10px;
-
-}
-
-
-
-.modal-box input{
-
-    width:100%;
-
-    padding:15px;
-
-    border-radius:15px;
-
-    border:1px solid #ddd;
-
-    margin:10px 0;
-
-    text-align:center;
-
-    font-size:17px;
-
-}
-
-
-
-.modal-box button{
-
-    width:100%;
-
-    margin-top:15px;
-
-    padding:15px;
-
-    font-size:18px;
-
-}
-
-
-
-/* MOBILE */
-
-@media(max-width:400px){
-
-    .grid{
-
-        grid-template-columns:1fr 1fr;
-
-        gap:10px;
-
-    }
-
-
-    .card img{
-
-        height:120px;
-
-    }
-
-
-    .info h3{
-
-        font-size:15px;
-
-    }
-
-}
+        :root {
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --ink: #172033;
+            --muted: #667085;
+            --line: #e7eaf0;
+            --surface: #fff;
+            --page: #f6f7fb;
+            --shadow: 0 8px 24px rgba(23, 32, 51, .08);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding-bottom: 100px;
+            background: var(--page);
+            color: var(--ink);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        body.locked { overflow: hidden; }
+        button, input, textarea { font: inherit; }
+        button { -webkit-tap-highlight-color: transparent; }
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            color: #fff;
+            background: linear-gradient(135deg, #fb7c21, #f15a0a);
+            box-shadow: 0 4px 18px rgba(234, 88, 12, .22);
+        }
+        .header-inner,
+        main {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+        .brand { display: flex; align-items: center; gap: 11px; }
+        .brand-icon {
+            width: 41px;
+            height: 41px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, .18);
+            font-size: 21px;
+        }
+        .brand h1 { margin: 0; font-size: 20px; }
+        .brand p { margin: 2px 0 0; opacity: .85; font-size: 12px; }
+        .table-chip {
+            padding: 9px 12px;
+            border: 1px solid rgba(255, 255, 255, .28);
+            border-radius: 11px;
+            color: #fff;
+            background: rgba(255, 255, 255, .14);
+            cursor: pointer;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        main { padding: 24px 0 36px; }
+        .welcome {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 18px 20px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+        .welcome-label { margin: 0 0 4px; color: var(--muted); font-size: 13px; }
+        .welcome h2 { margin: 0; font-size: 21px; }
+        .order-link {
+            padding: 10px 13px;
+            border: 0;
+            border-radius: 10px;
+            color: var(--primary-dark);
+            background: #fff1e7;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .menu-heading { margin-bottom: 13px; }
+        .menu-heading h2 { margin: 0 0 4px; font-size: 24px; }
+        .menu-heading p { margin: 0; color: var(--muted); font-size: 14px; }
+        .search-box { position: relative; margin: 16px 0 12px; }
+        .search-box span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+        .search-box input {
+            width: 100%;
+            height: 49px;
+            padding: 0 46px 0 43px;
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            outline: none;
+            color: var(--ink);
+            background: var(--surface);
+            box-shadow: 0 3px 12px rgba(23, 32, 51, .04);
+        }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(249, 115, 22, .12); }
+        .clear-search {
+            position: absolute;
+            right: 8px;
+            top: 7px;
+            width: 35px;
+            height: 35px;
+            display: none;
+            border: 0;
+            border-radius: 9px;
+            color: var(--muted);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .categories {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding-bottom: 2px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar { display: none; }
+        .category-btn {
+            flex: 0 0 auto;
+            padding: 9px 13px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            color: var(--muted);
+            background: var(--surface);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 650;
+        }
+        .category-btn.active { border-color: var(--primary); color: var(--primary-dark); background: #fff1e7; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 16px;
+        }
+        .food-card {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+        .food-image { position: relative; height: 175px; overflow: hidden; background: #e9edf2; }
+        .food-image img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .3s; }
+        .food-card:hover .food-image img { transform: scale(1.03); }
+        .food-category {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            max-width: calc(100% - 20px);
+            padding: 5px 9px;
+            overflow: hidden;
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(23, 32, 51, .76);
+            backdrop-filter: blur(5px);
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .food-info { padding: 14px; }
+        .food-info h3 { min-height: 43px; margin: 0 0 8px; font-size: 16px; line-height: 1.35; }
+        .food-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .price { color: var(--primary-dark); font-size: 19px; font-weight: 800; white-space: nowrap; }
+        .add-btn {
+            min-width: 74px;
+            height: 40px;
+            border: 0;
+            border-radius: 10px;
+            color: #fff;
+            background: var(--primary);
+            cursor: pointer;
+            font-weight: 750;
+        }
+        .add-btn:active { transform: scale(.96); }
+        .add-btn.added { color: var(--primary-dark); background: #fff1e7; }
+        .empty-state {
+            grid-column: 1 / -1;
+            padding: 52px 20px;
+            border: 1px dashed #cfd4dc;
+            border-radius: 16px;
+            text-align: center;
+            color: var(--muted);
+            background: rgba(255, 255, 255, .65);
+        }
+        .empty-state span { display: block; margin-bottom: 8px; font-size: 35px; }
+
+        .cart-bar {
+            position: fixed;
+            left: 50%;
+            bottom: 14px;
+            z-index: 80;
+            width: min(560px, calc(100% - 24px));
+            min-height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 10px 11px 10px 17px;
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 17px;
+            color: #fff;
+            background: #172033;
+            box-shadow: 0 12px 30px rgba(23, 32, 51, .3);
+            transform: translateX(-50%);
+        }
+        .cart-label { color: #b8c0cf; font-size: 12px; }
+        .cart-summary strong { display: block; margin-top: 2px; font-size: 18px; }
+        .view-cart-btn {
+            min-height: 44px;
+            padding: 0 17px;
+            border: 0;
+            border-radius: 11px;
+            color: #fff;
+            background: var(--primary);
+            cursor: pointer;
+            font-weight: 750;
+        }
+        .view-cart-btn:disabled { color: #9199a8; background: #343e52; cursor: default; }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            background: rgba(15, 23, 42, .58);
+            backdrop-filter: blur(3px);
+        }
+        .overlay.open { display: block; }
+        .dialog {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: min(430px, calc(100% - 28px));
+            max-height: calc(100vh - 28px);
+            overflow-y: auto;
+            padding: 24px;
+            border-radius: 20px;
+            background: var(--surface);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .22);
+            transform: translate(-50%, -50%);
+            animation: show .2s ease-out;
+        }
+        @keyframes show { from { opacity: 0; transform: translate(-50%, -46%); } }
+        .dialog-icon { width: 48px; height: 48px; display: grid; place-items: center; margin-bottom: 14px; border-radius: 14px; background: #fff1e7; font-size: 24px; }
+        .dialog h2 { margin: 0 0 5px; font-size: 23px; }
+        .dialog-subtitle { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 700; }
+        .field input, .field textarea {
+            width: 100%;
+            border: 1px solid #d8dde6;
+            border-radius: 11px;
+            outline: none;
+            color: var(--ink);
+            background: #fff;
+        }
+        .field input { height: 47px; padding: 0 13px; }
+        .field textarea { min-height: 76px; padding: 12px 13px; resize: vertical; }
+        .field input:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(249, 115, 22, .12); }
+        .primary-btn {
+            width: 100%;
+            min-height: 48px;
+            border: 0;
+            border-radius: 11px;
+            color: #fff;
+            background: var(--primary);
+            cursor: pointer;
+            font-weight: 750;
+        }
+        .primary-btn:disabled { opacity: .65; cursor: wait; }
+
+        .cart-dialog { padding: 0; }
+        .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
+        .cart-head h2 { margin: 0; font-size: 21px; }
+        .close-btn { width: 38px; height: 38px; border: 0; border-radius: 10px; color: var(--muted); background: #f0f2f5; cursor: pointer; font-size: 18px; }
+        .cart-items { max-height: 44vh; padding: 7px 20px; overflow-y: auto; }
+        .cart-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+        .cart-item-name { margin: 0 0 5px; font-size: 14px; font-weight: 700; }
+        .cart-item-price { color: var(--muted); font-size: 13px; }
+        .qty-control { display: flex; align-items: center; gap: 9px; }
+        .qty-control button { width: 32px; height: 32px; border: 0; border-radius: 9px; color: var(--primary-dark); background: #fff1e7; cursor: pointer; font-size: 18px; }
+        .qty-control span { min-width: 18px; text-align: center; font-weight: 700; }
+        .cart-checkout { padding: 15px 20px 20px; }
+        .cart-total { display: flex; justify-content: space-between; margin-bottom: 14px; }
+        .cart-total span { color: var(--muted); }
+        .cart-total strong { color: var(--primary-dark); font-size: 21px; }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 86px;
+            z-index: 200;
+            max-width: calc(100% - 28px);
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #fff;
+            background: #172033;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -8px);
+            transition: .2s;
+            font-size: 13px;
+            font-weight: 650;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        @media (max-width: 600px) {
+            body { padding-bottom: 84px; }
+            .header-inner, main { width: calc(100% - 16px); }
+            .header-inner { min-height: 62px; }
+            .brand { gap: 8px; }
+            .brand-icon { width: 34px; height: 34px; border-radius: 10px; font-size: 18px; }
+            .brand h1 { font-size: 16px; }
+            .brand p { display: none; }
+            .table-chip { padding: 8px 9px; border-radius: 9px; font-size: 11px; }
+            main { padding: 12px 0 24px; }
+            .welcome {
+                margin-bottom: 18px;
+                padding: 11px 12px;
+                border-radius: 13px;
+                box-shadow: 0 3px 12px rgba(23, 32, 51, .05);
+            }
+            .welcome-label { margin-bottom: 2px; font-size: 11px; }
+            .welcome h2 { max-width: 165px; overflow: hidden; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
+            .order-link { padding: 8px 9px; border-radius: 8px; font-size: 11px; }
+            .menu-heading { margin-bottom: 10px; }
+            .menu-heading h2 { margin-bottom: 2px; font-size: 20px; }
+            .menu-heading p { font-size: 12px; }
+            .search-box { margin: 12px 0 10px; }
+            .search-box input { height: 44px; border-radius: 12px; font-size: 13px; }
+            .clear-search { top: 5px; }
+            .categories { gap: 6px; margin-bottom: 14px; }
+            .category-btn { padding: 7px 11px; font-size: 12px; }
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+            .food-card { border-radius: 13px; box-shadow: 0 4px 14px rgba(23, 32, 51, .07); }
+            .food-image { height: 112px; }
+            .food-category { left: 7px; bottom: 7px; padding: 4px 7px; font-size: 9px; }
+            .food-info { padding: 9px; }
+            .food-info h3 {
+                min-height: 36px;
+                margin-bottom: 5px;
+                display: -webkit-box;
+                overflow: hidden;
+                font-size: 13px;
+                line-height: 1.35;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+            .food-bottom { display: block; }
+            .price { margin-bottom: 8px; font-size: 15px; }
+            .add-btn { width: 100%; min-width: 0; height: 34px; border-radius: 8px; font-size: 12px; }
+            .cart-bar {
+                bottom: 8px;
+                width: calc(100% - 16px);
+                min-height: 58px;
+                padding: 8px 8px 8px 13px;
+                border-radius: 14px;
+            }
+            .cart-label { font-size: 10px; }
+            .cart-summary strong { font-size: 16px; }
+            .view-cart-btn { min-height: 40px; padding: 0 12px; border-radius: 9px; font-size: 12px; }
+            .dialog { padding: 20px; }
+            .cart-dialog { padding: 0; top: auto; bottom: 0; width: 100%; max-height: 88vh; border-radius: 20px 20px 0 0; transform: translateX(-50%); animation: sheet .22s ease-out; }
+            @keyframes sheet { from { transform: translate(-50%, 35px); opacity: 0; } }
+        }
     </style>
 </head>
-
 <body>
-    <div id="tableModal" class="modal">
-
-    <div class="modal-box">
-
-        <h2>🍽️ Chào mừng</h2>
-        <p>Nhập tên của bạn</p>
-
-        <input
-            type="text"
-            id="customerName"
-            placeholder="Ví dụ: Nguyễn Văn A"
-        >
-        <p>Vui lòng nhập số bàn</p>
-
-        <input
-            type="number"
-            id="tableInput"
-            placeholder="Ví dụ: 12"
-        >
-
-        <button id="startOrder">
-            Bắt đầu gọi món
-        </button>
-
+    <div class="overlay open" id="tableModal" aria-modal="true" role="dialog">
+        <div class="dialog">
+            <div class="dialog-icon">🍽️</div>
+            <h2>Chào mừng bạn</h2>
+            <p class="dialog-subtitle">Nhập thông tin để nhà hàng phục vụ đúng bàn.</p>
+            <div class="field">
+                <label for="customerName">Tên của bạn</label>
+                <input id="customerName" type="text" placeholder="Ví dụ: Nguyễn Văn A" autocomplete="name">
+            </div>
+            <div class="field">
+                <label for="tableInput">Số bàn</label>
+                <input id="tableInput" type="number" min="1" placeholder="Ví dụ: 12" inputmode="numeric">
+            </div>
+            <button class="primary-btn" id="startOrder" type="button">Xem thực đơn</button>
+        </div>
     </div>
 
-</div>
-    <header>🍽️ MENU NHÀ HÀNG</header>
-    <div style="background:#fff;padding:10px;text-align:center;font-weight:bold">
-    🪑 Bàn: <span id="tableNumber"></span> <div style="font-size:18px;font-weight:bold">
-        👤 <span id="customerNameShow"></span>
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand"><div class="brand-icon">🍽️</div><div><h1>Thực đơn nhà hàng</h1><p>Chọn món ngon, phục vụ tận bàn</p></div></div>
+            <button class="table-chip" id="tableChip" onclick="changeTable()">Bàn -- · Đổi</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <div><p class="welcome-label">Xin chào</p><h2 id="customerNameShow">Khách hàng</h2></div>
+            <button class="order-link" onclick="location.href='/my-order.html'">Theo dõi đơn</button>
+        </section>
+
+        <section>
+            <div class="menu-heading"><h2>Hôm nay ăn gì?</h2><p>Chọn món bạn thích và thêm vào giỏ hàng.</p></div>
+            <div class="search-box">
+                <span>⌕</span>
+                <input id="search" type="search" placeholder="Tìm tên món ăn..." autocomplete="off">
+                <button class="clear-search" id="clearSearch" aria-label="Xóa tìm kiếm">✕</button>
+            </div>
+            <nav class="categories" id="categories" aria-label="Danh mục món ăn"></nav>
+            <div class="grid" id="grid"><div class="empty-state"><span>⏳</span>Đang tải thực đơn...</div></div>
+        </section>
+    </main>
+
+    <div class="cart-bar">
+        <div class="cart-summary"><div class="cart-label"><span id="count">0</span> món đã chọn</div><strong id="total">0 đ</strong></div>
+        <button class="view-cart-btn" id="viewCartBtn" onclick="openCart()" disabled>Xem giỏ hàng</button>
     </div>
-    <button onclick="changeTable()" style="width:auto;margin-left:10px;padding:5px 10px">
-        Đổi bàn
-    </button>
-</div>
-    <div class="search"><input id="search" placeholder="Tìm món..."></div>
-    <div class="grid" id="grid"></div>
-    <div class="cart">
-        <div><b id="count">0</b> món - <b id="total">0đ</b></div><button style="width:auto;padding:10px 18px" onclick="placeOrder()">Đặt đơn
-            hàng</button>
+
+    <div class="overlay" id="cartModal" aria-modal="true" role="dialog" onclick="closeCartOnBackdrop(event)">
+        <div class="dialog cart-dialog">
+            <div class="cart-head"><h2>Giỏ hàng của bạn</h2><button class="close-btn" onclick="closeCart()" aria-label="Đóng">✕</button></div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-checkout">
+                <div class="field"><label for="orderNote">Ghi chú cho nhà hàng</label><textarea id="orderNote" placeholder="Ví dụ: Không cay, ít đá..."></textarea></div>
+                <div class="cart-total"><span>Tổng thanh toán</span><strong id="cartTotal">0 đ</strong></div>
+                <button class="primary-btn" id="placeOrderBtn" onclick="placeOrder()">Đặt món ngay</button>
+            </div>
+        </div>
     </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
     <script>
-        const modal = document.getElementById("tableModal");
-        const tableInput = document.getElementById("tableInput");   
-        const startBtn = document.getElementById("startOrder");
-        const savedTable = localStorage.getItem("table");
-        const customerName = document.getElementById("customerName");
-        const tableNumber = document.getElementById("tableNumber");
-        const savedName = localStorage.getItem("customerName");
+        const tableModal = document.getElementById("tableModal");
+        const cartModal = document.getElementById("cartModal");
+        const tableInput = document.getElementById("tableInput");
+        const customerNameInput = document.getElementById("customerName");
         const customerNameShow = document.getElementById("customerNameShow");
-                    if(savedName){
-                customerNameShow.textContent = savedName;
-            }
-            if(savedTable && savedName){
-
-    tableNumber.textContent = savedTable;
-
-    customerNameShow.textContent = savedName;
-
-    modal.style.display = "none";
-
-}
-            if(savedTable){
-                tableNumber.textContent = savedTable;
-            }
-            if(savedTable){
-
-                modal.style.display="none";
-
-            }
-        startBtn.onclick = () => {
-
-            const table = tableInput.value.trim();
-            const name = customerName.value.trim();
-             console.log(name); 
-            if(name === ""){
-                alert("Vui lòng nhập tên");
-                return;
-            }
-            if(table===""){
-
-                alert("Vui lòng nhập số bàn");
-
-                return;
-
-            }
-            localStorage.setItem("customerName", name);
-            localStorage.setItem("table",table);
-            customerNameShow.textContent = name;
-            tableNumber.textContent = table;
-            modal.style.display="none";
-
-        };
+        const tableChip = document.getElementById("tableChip");
+        const searchInput = document.getElementById("search");
+        const clearSearch = document.getElementById("clearSearch");
+        const categoriesElement = document.getElementById("categories");
+        const gridElement = document.getElementById("grid");
+        const viewCartBtn = document.getElementById("viewCartBtn");
+        const placeOrderBtn = document.getElementById("placeOrderBtn");
+        const countElement = document.getElementById("count");
+        const totalElement = document.getElementById("total");
+        const cartTotalElement = document.getElementById("cartTotal");
+        const cartItemsElement = document.getElementById("cartItems");
+        const toastElement = document.getElementById("toast");
         let foods = [];
         let cart = {};
+        let activeCategory = "Tất cả";
+        let toastTimer;
+
+        const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+        })[char]);
+
+        restoreCustomer();
+
+        function restoreCustomer() {
+            const savedName = localStorage.getItem("customerName");
+            const savedTable = localStorage.getItem("table");
+            if (savedName && savedTable) {
+                customerNameShow.textContent = savedName;
+                tableChip.textContent = `Bàn ${savedTable} · Đổi`;
+                tableModal.classList.remove("open");
+            } else {
+                document.body.classList.add("locked");
+            }
+        }
+
+        document.getElementById("startOrder").addEventListener("click", () => {
+            const name = customerNameInput.value.trim();
+            const table = tableInput.value.trim();
+            if (!name) return showToast("Vui lòng nhập tên của bạn.");
+            if (!table || Number(table) < 1) return showToast("Vui lòng nhập số bàn hợp lệ.");
+            localStorage.setItem("customerName", name);
+            localStorage.setItem("table", table);
+            customerNameShow.textContent = name;
+            tableChip.textContent = `Bàn ${table} · Đổi`;
+            tableModal.classList.remove("open");
+            document.body.classList.remove("locked");
+        });
+
         async function loadMenu() {
-
-    try {
-
-        const res = await fetch("/api/menu");
-
-        foods = await res.json();
-
-        render(foods);
-
-    } catch (err) {
-
-        console.log(err);
-
-        alert("Không tải được menu");
-
-    }
-
-}
-        function render(list){
-
-    grid.innerHTML="";
-
-    list.forEach(food=>{
-
-        grid.innerHTML+=`
-
-        <div class="card">
-
-            <img src="${food.img || food.image}">
-
-            <div class="info">
-
-                <h3>${food.name}</h3>
-
-                <div class="price">
-
-                    ${food.price.toLocaleString()}đ
-
-                </div>
-
-                <br>
-
-                <button onclick="add('${food._id}')">
-
-                    Thêm
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-}
-        function changeTable(){
-
-            localStorage.removeItem("table");
-                localStorage.removeItem("customerName");
-            location.reload();
-
+            try {
+                const res = await fetch("/api/menu");
+                if (!res.ok) throw new Error();
+                foods = await res.json();
+                renderCategories();
+                applyFilters();
+            } catch {
+                gridElement.innerHTML = '<div class="empty-state"><span>⚠️</span>Không tải được thực đơn. Vui lòng thử lại.</div>';
+            }
         }
-        function add(id){
 
-    const food = foods.find(f => f._id === id);
-
-    if(!food) return;
-
-    cart[id] ??= {
-
-        food,
-
-        qty:0
-
-    };
-
-    cart[id].qty++;
-
-    updateCart();
-
-}
-        search.oninput = e => {
-            const k = e.target.value.toLowerCase();
-            render(foods.filter(f => f.name.toLowerCase().includes(k)));
+        function renderCategories() {
+            const categoryList = ["Tất cả", ...new Set(foods.map(food => food.category).filter(Boolean))];
+            categoriesElement.innerHTML = categoryList.map(category =>
+                `<button class="category-btn ${category === activeCategory ? "active" : ""}" data-category="${escapeHtml(category)}">${escapeHtml(category)}</button>`
+            ).join("");
+            categoriesElement.querySelectorAll(".category-btn").forEach(button => button.addEventListener("click", () => {
+                activeCategory = button.dataset.category;
+                renderCategories();
+                applyFilters();
+            }));
         }
+
+        function applyFilters() {
+            const keyword = searchInput.value.trim().toLocaleLowerCase("vi");
+            const filtered = foods.filter(food => {
+                const matchesCategory = activeCategory === "Tất cả" || food.category === activeCategory;
+                const matchesSearch = String(food.name || "").toLocaleLowerCase("vi").includes(keyword);
+                return matchesCategory && matchesSearch;
+            });
+            render(filtered);
+        }
+
+        function render(list) {
+            if (!list.length) {
+                gridElement.innerHTML = '<div class="empty-state"><span>🔎</span>Không tìm thấy món phù hợp.</div>';
+                return;
+            }
+            gridElement.innerHTML = list.map(food => {
+                const quantity = cart[food._id]?.qty || 0;
+                return `<article class="food-card">
+                    <div class="food-image">
+                        <img src="${escapeHtml(food.img || food.image || "")}" alt="${escapeHtml(food.name)}" loading="lazy" onerror="this.style.opacity='.25'">
+                        <span class="food-category">${escapeHtml(food.category || "Món ăn")}</span>
+                    </div>
+                    <div class="food-info">
+                        <h3>${escapeHtml(food.name)}</h3>
+                        <div class="food-bottom">
+                            <div class="price">${Number(food.price || 0).toLocaleString("vi-VN")} đ</div>
+                            <button class="add-btn ${quantity ? "added" : ""}" onclick="add('${escapeHtml(food._id)}')">${quantity ? `Đã thêm ${quantity}` : "+ Thêm"}</button>
+                        </div>
+                    </div>
+                </article>`;
+            }).join("");
+        }
+
+        searchInput.addEventListener("input", () => {
+            clearSearch.style.display = searchInput.value ? "block" : "none";
+            applyFilters();
+        });
+        clearSearch.addEventListener("click", () => {
+            searchInput.value = "";
+            clearSearch.style.display = "none";
+            searchInput.focus();
+            applyFilters();
+        });
+
+        function changeTable() {
+            customerNameInput.value = localStorage.getItem("customerName") || "";
+            tableInput.value = localStorage.getItem("table") || "";
+            tableModal.classList.add("open");
+            document.body.classList.add("locked");
+        }
+
+        function add(id) {
+            const food = foods.find(item => item._id === id);
+            if (!food) return;
+            if (!cart[id]) cart[id] = { food, qty: 0 };
+            cart[id].qty++;
+            updateCart();
+            applyFilters();
+            showToast(`Đã thêm ${food.name}`);
+        }
+
+        function changeQuantity(id, amount) {
+            if (!cart[id]) return;
+            cart[id].qty += amount;
+            if (cart[id].qty <= 0) delete cart[id];
+            updateCart();
+            renderCart();
+            applyFilters();
+            if (!Object.keys(cart).length) closeCart();
+        }
+
+        function updateCart() {
+            const values = Object.values(cart);
+            const countItem = values.reduce((sum, item) => sum + item.qty, 0);
+            const money = values.reduce((sum, item) => sum + item.qty * Number(item.food.price || 0), 0);
+            countElement.textContent = countItem;
+            totalElement.textContent = money.toLocaleString("vi-VN") + " đ";
+            cartTotalElement.textContent = money.toLocaleString("vi-VN") + " đ";
+            viewCartBtn.disabled = countItem === 0;
+            viewCartBtn.textContent = countItem ? "Xem giỏ hàng" : "Chọn món trước";
+        }
+
+        function openCart() {
+            if (!Object.keys(cart).length) return;
+            renderCart();
+            cartModal.classList.add("open");
+            document.body.classList.add("locked");
+        }
+        function closeCart() { cartModal.classList.remove("open"); document.body.classList.remove("locked"); }
+        function closeCartOnBackdrop(event) { if (event.target === cartModal) closeCart(); }
+
+        function renderCart() {
+            cartItemsElement.innerHTML = Object.entries(cart).map(([id, item]) => `
+                <div class="cart-item">
+                    <div><p class="cart-item-name">${escapeHtml(item.food.name)}</p><div class="cart-item-price">${(item.qty * Number(item.food.price || 0)).toLocaleString("vi-VN")} đ</div></div>
+                    <div class="qty-control"><button onclick="changeQuantity('${escapeHtml(id)}', -1)" aria-label="Giảm">−</button><span>${item.qty}</span><button onclick="changeQuantity('${escapeHtml(id)}', 1)" aria-label="Tăng">+</button></div>
+                </div>`).join("");
+        }
+
+        async function placeOrder() {
+            if (!Object.keys(cart).length) return showToast("Bạn chưa chọn món.");
+            const items = Object.values(cart).map(item => ({
+                id: item.food._id,
+                name: item.food.name,
+                qty: item.qty,
+                price: item.food.price
+            }));
+            const totalMoney = Object.values(cart).reduce((sum, item) => sum + item.qty * Number(item.food.price || 0), 0);
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.textContent = "Đang gửi đơn...";
+            try {
+                const res = await fetch("/api/orders", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        customer: localStorage.getItem("customerName"),
+                        table: localStorage.getItem("table"),
+                        note: document.getElementById("orderNote").value.trim(),
+                        items,
+                        total: totalMoney
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) throw new Error();
+                cart = {};
+                updateCart();
+                location.href = "/my-order.html";
+            } catch {
+                showToast("Đặt món thất bại. Vui lòng thử lại.");
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = "Đặt món ngay";
+            }
+        }
+
+        function showToast(message) {
+            toastElement.textContent = message;
+            toastElement.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toastElement.classList.remove("show"), 1800);
+        }
+
         loadMenu();
-        async function placeOrder(){
-
-    if(Object.keys(cart).length===0){
-
-        alert("Chưa chọn món");
-
-        return;
-
-    }
-
-  
-
-
-    const items = Object.values(cart).map(item => ({
-    id: item.food._id,
-    name: item.food.name,
-    qty: item.qty,
-    price: item.food.price
-}));
-
-const totalMoney = Object.values(cart).reduce(
-    (sum, item) => sum + item.qty * item.food.price,
-    0
-);
-
-    const res=await fetch("/api/orders",{
-
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-            customer: localStorage.getItem("customerName"),
-            table:localStorage.getItem("table"),
-
-            note:"",
-
-            items,
-
-            total:totalMoney
-
-        })
-
-    });
-
-    const data=await res.json();
-
-    if(data.success){
-
-    alert("Đặt món thành công!");
-
-    cart = {};
-    updateCart();
-
-    count.textContent = 0;
-
-    total.textContent = "0đ";
-           location.href="/my-order.html";
-}else{
-
-    alert("Đặt món thất bại");
-
-}
-
-}
-function updateCart(){
-
-    let countItem = 0;
-
-    let money = 0;
-
-    Object.values(cart).forEach(item=>{
-
-        countItem += item.qty;
-
-        money += item.qty * item.food.price;
-
-    });
-
-    count.textContent = countItem;
-
-    total.textContent = money.toLocaleString()+"đ";
-
-}
     </script>
 </body>
-
 </html>

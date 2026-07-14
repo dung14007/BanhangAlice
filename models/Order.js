@@ -3,6 +3,11 @@ const mongoose = require("mongoose");
 const OrderSchema = new mongoose.Schema({
     customer: String,
     table: String,
+    note: {
+        type: String,
+        default: "",
+        trim: true
+    },
     items: Array,
     total: Number,
 
