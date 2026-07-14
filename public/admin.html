@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f97316">
+    <meta name="theme-color" content="#fffaf5">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,13 +15,13 @@
     <style>
         :root {
             --primary: #f97316;
-            --primary-dark: #ea580c;
-            --ink: #172033;
-            --muted: #667085;
-            --line: #e7eaf0;
+            --primary-dark: #c94f0a;
+            --ink: #392a22;
+            --muted: #7b6a61;
+            --line: #efe2da;
             --surface: #ffffff;
-            --page: #f6f7fb;
-            --shadow: 0 8px 24px rgba(23, 32, 51, .08);
+            --page: #fffaf5;
+            --shadow: 0 8px 24px rgba(106, 72, 50, .07);
         }
 
         * { box-sizing: border-box; }
@@ -37,9 +37,11 @@
         button { font: inherit; }
 
         .app-header {
-            color: #fff;
-            background: linear-gradient(135deg, #fb7c21, #f15a0a);
-            box-shadow: 0 4px 18px rgba(234, 88, 12, .22);
+            color: var(--ink);
+            background: rgba(255, 255, 255, .94);
+            border-bottom: 1px solid var(--line);
+            box-shadow: 0 4px 18px rgba(106, 72, 50, .06);
+            backdrop-filter: blur(12px);
         }
 
         .header-inner,
@@ -63,11 +65,11 @@
             display: grid;
             place-items: center;
             border-radius: 13px;
-            background: rgba(255, 255, 255, .18);
+            background: #fff0e4;
             font-size: 22px;
         }
         .brand h1 { margin: 0; font-size: 21px; }
-        .brand p { margin: 3px 0 0; opacity: .85; font-size: 13px; }
+        .brand p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
 
         .header-btn,
         .refresh-btn,
@@ -85,7 +87,8 @@
         .header-btn {
             padding: 11px 16px;
             border-radius: 11px;
-            background: #fff;
+            border: 1px solid #ffd6bd;
+            background: #fff4eb;
             color: var(--primary-dark);
         }
 
@@ -139,7 +142,7 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 14px;
             margin-bottom: 20px;
         }
@@ -154,6 +157,34 @@
         .stat-label { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
         .stat-value { margin: 0; font-size: 28px; line-height: 1; }
         .stat-value.revenue { color: var(--primary-dark); }
+        .stat-value.pending-value { color: #b45309; }
+
+        .time-toolbar {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: var(--surface);
+        }
+        .time-field { flex: 1; }
+        .time-field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
+        .time-field select,
+        .time-field input {
+            width: 100%;
+            height: 42px;
+            padding: 0 11px;
+            border: 1px solid #d8dde6;
+            border-radius: 9px;
+            outline: none;
+            color: var(--ink);
+            background: #fff;
+        }
+        .time-field select:focus,
+        .time-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(249, 115, 22, .1); }
+        .period-caption { flex: 1.4; padding-bottom: 4px; color: var(--muted); font-size: 13px; text-align: right; }
 
         .filters {
             display: flex;
@@ -180,8 +211,34 @@
             background: #fff4eb;
             color: var(--primary-dark);
         }
+        .archive-tabs { display: flex; gap: 8px; margin-bottom: 11px; }
+        .archive-tab {
+            padding: 9px 13px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            color: var(--muted);
+            background: var(--surface);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .archive-tab.active { border-color: #ffd2b6; color: var(--primary-dark); background: #fff4eb; }
 
         #orders {
+            display: block;
+        }
+        .day-group { margin-bottom: 25px; }
+        .day-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 11px;
+            padding: 0 2px;
+        }
+        .day-heading h2 { margin: 0; font-size: 18px; }
+        .day-summary { color: var(--muted); font-size: 12px; font-weight: 650; text-align: right; }
+        .day-orders {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
             gap: 16px;
@@ -225,6 +282,7 @@
         .status.processing { color: #1d4ed8; background: #dbeafe; }
         .status.completed { color: #047857; background: #d1fae5; }
         .status.paid { color: #6d28d9; background: #ede9fe; }
+        .status.cancelled { color: #b42318; background: #fee4e2; }
 
         .note {
             margin: 0 0 12px;
@@ -265,15 +323,36 @@
             box-shadow: 0 5px 12px rgba(249, 115, 22, .2);
         }
         .action-btn:hover { background: var(--primary-dark); }
+        .cancel-action-btn {
+            min-height: 40px;
+            padding: 9px 12px;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            color: #b42318;
+            background: #fff5f5;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .order-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+        .archive-btn {
+            min-height: 40px;
+            padding: 9px 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            color: var(--muted);
+            background: #fffaf6;
+            cursor: pointer;
+            font-weight: 700;
+        }
 
         .empty-state {
             grid-column: 1 / -1;
             padding: 50px 20px;
-            border: 1px dashed #cfd4dc;
+            border: 1px dashed #ddc9bc;
             border-radius: 16px;
             text-align: center;
             color: var(--muted);
-            background: rgba(255, 255, 255, .65);
+            background: rgba(255, 255, 255, .82);
         }
         .empty-state span { display: block; margin-bottom: 8px; font-size: 34px; }
 
@@ -295,10 +374,21 @@
             .dashboard { gap: 10px; }
             .stat-card { padding: 16px; border-radius: 14px; }
             .stat-value { font-size: 23px; }
-            #orders { grid-template-columns: 1fr; }
+            .dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .dashboard .stat-card:last-child { grid-column: 1 / -1; }
+            .time-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; padding: 11px; }
+            .period-caption { grid-column: 1 / -1; padding: 0; text-align: left; font-size: 11px; }
+            .time-field select, .time-field input { height: 40px; font-size: 13px; }
+            .day-group { margin-bottom: 20px; }
+            .day-heading h2 { font-size: 16px; }
+            .day-summary { font-size: 10px; }
+            .day-orders { grid-template-columns: 1fr; gap: 11px; }
             .order-card { padding: 16px; }
             .order-footer { align-items: flex-end; }
             .action-btn { min-height: 44px; }
+            .cancel-action-btn { min-height: 38px; font-size: 12px; }
+            .order-actions { max-width: 58%; }
+            .archive-btn { min-height: 38px; font-size: 12px; }
         }
     </style>
 </head>
@@ -319,8 +409,8 @@
     <main>
         <div class="page-heading">
             <div>
-                <h2>Đơn hàng hôm nay</h2>
-                <p>Cập nhật trạng thái để nhân viên dễ dàng theo dõi.</p>
+                <h2>Thống kê đơn hàng</h2>
+                <p>Xem doanh thu và đơn hàng theo từng ngày hoặc tháng.</p>
             </div>
             <button class="refresh-btn" onclick="loadOrders()">↻ Làm mới</button>
         </div>
@@ -332,14 +422,43 @@
 
         <section class="dashboard" aria-label="Thống kê">
             <article class="stat-card">
-                <p class="stat-label">Tổng đơn hàng</p>
+                <p class="stat-label" id="countLabel">Đơn trong ngày</p>
                 <h3 class="stat-value" id="countOrder">0</h3>
             </article>
             <article class="stat-card">
-                <p class="stat-label">Doanh thu đã thu</p>
+                <p class="stat-label" id="revenueLabel">Doanh thu trong ngày</p>
                 <h3 class="stat-value revenue" id="totalMoney">0 đ</h3>
             </article>
+            <article class="stat-card">
+                <p class="stat-label">Đơn chưa xử lý xong</p>
+                <h3 class="stat-value pending-value" id="pendingOrder">0</h3>
+            </article>
         </section>
+
+        <section class="time-toolbar" aria-label="Chọn thời gian thống kê">
+            <div class="time-field">
+                <label for="periodType">Thống kê theo</label>
+                <select id="periodType">
+                    <option value="day">Ngày</option>
+                    <option value="month">Tháng</option>
+                    <option value="all">Tất cả thời gian</option>
+                </select>
+            </div>
+            <div class="time-field" id="dayField">
+                <label for="dayPicker">Chọn ngày</label>
+                <input type="date" id="dayPicker">
+            </div>
+            <div class="time-field" id="monthField" hidden>
+                <label for="monthPicker">Chọn tháng</label>
+                <input type="month" id="monthPicker">
+            </div>
+            <div class="period-caption" id="periodCaption">Đang xem đơn hôm nay</div>
+        </section>
+
+        <nav class="archive-tabs" aria-label="Đơn hiện tại và đơn lưu trữ">
+            <button class="archive-tab active" data-archive="active">Đơn hiện tại</button>
+            <button class="archive-tab" data-archive="archived">Đã lưu trữ</button>
+        </nav>
 
         <nav class="filters" aria-label="Lọc đơn hàng">
             <button class="filter-btn active" data-filter="all">Tất cả</button>
@@ -359,19 +478,52 @@
         const socket = io({ reconnection: true, reconnectionAttempts: Infinity });
         let allOrders = [];
         let currentFilter = "all";
+        let currentPeriod = "day";
+        let currentArchiveView = "active";
         let hasLoadedOrders = false;
         let knownOrderIds = new Set();
         let notificationRegistration = null;
+        let pushSubscription = null;
         let audioContext = null;
 
         const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
             "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
         })[char]);
 
+        const dayPicker = document.getElementById("dayPicker");
+        const monthPicker = document.getElementById("monthPicker");
+        const periodType = document.getElementById("periodType");
+        const today = new Date();
+        dayPicker.value = localDateKey(today);
+        monthPicker.value = localDateKey(today).slice(0, 7);
+
+        periodType.addEventListener("change", () => {
+            currentPeriod = periodType.value;
+            document.getElementById("dayField").hidden = currentPeriod !== "day";
+            document.getElementById("monthField").hidden = currentPeriod !== "month";
+            renderOrders();
+        });
+        dayPicker.addEventListener("change", renderOrders);
+        monthPicker.addEventListener("change", renderOrders);
+
         document.querySelectorAll(".filter-btn").forEach(button => {
             button.addEventListener("click", () => {
                 currentFilter = button.dataset.filter;
                 document.querySelectorAll(".filter-btn").forEach(item => item.classList.toggle("active", item === button));
+                renderOrders();
+            });
+        });
+
+        document.querySelectorAll(".archive-tab").forEach(button => {
+            button.addEventListener("click", () => {
+                currentArchiveView = button.dataset.archive;
+                document.querySelectorAll(".archive-tab").forEach(item => item.classList.toggle("active", item === button));
+                if (currentArchiveView === "archived") {
+                    currentPeriod = "all";
+                    periodType.value = "all";
+                    document.getElementById("dayField").hidden = true;
+                    document.getElementById("monthField").hidden = true;
+                }
                 renderOrders();
             });
         });
@@ -389,11 +541,6 @@
                 knownOrderIds = new Set(data.map(order => String(order._id || "")));
                 hasLoadedOrders = true;
                 allOrders = data;
-                document.getElementById("countOrder").textContent = allOrders.length;
-                const money = allOrders
-                    .filter(order => order.status === "paid")
-                    .reduce((sum, order) => sum + Number(order.total || 0), 0);
-                document.getElementById("totalMoney").textContent = money.toLocaleString("vi-VN") + " đ";
                 renderOrders();
             } catch {
                 orders.innerHTML = '<div class="empty-state"><span>⚠️</span>Không tải được đơn hàng. Vui lòng thử lại.</div>';
@@ -401,45 +548,133 @@
         }
 
         function renderOrders() {
+            // Đơn đã hủy vẫn được giữ trong cơ sở dữ liệu nhưng không còn xuất hiện
+            // trong màn hình quản lý hoặc số liệu vận hành của admin.
+            const manageableOrders = allOrders.filter(order => order.status !== "cancelled");
+            const periodFiltered = filterByPeriod(manageableOrders);
+            updateStatistics(periodFiltered);
+            const archiveFiltered = periodFiltered.filter(order => currentArchiveView === "archived"
+                ? order.archived === true
+                : order.archived !== true);
             const filtered = currentFilter === "all"
-                ? allOrders
-                : allOrders.filter(order => order.status === currentFilter);
+                ? archiveFiltered
+                : archiveFiltered.filter(order => order.status === currentFilter);
 
             if (!filtered.length) {
-                document.getElementById("orders").innerHTML = '<div class="empty-state"><span>📋</span>Chưa có đơn hàng trong mục này.</div>';
+                const message = currentArchiveView === "archived" ? "Chưa có đơn hàng được lưu trữ." : "Không có đơn hàng trong thời gian đã chọn.";
+                document.getElementById("orders").innerHTML = `<div class="empty-state"><span>📋</span>${message}</div>`;
                 return;
             }
 
-            document.getElementById("orders").innerHTML = filtered.map(order => {
-                const action = actionFor(order);
-                const items = Array.isArray(order.items) ? order.items : [];
-                return `
-                    <article class="order-card">
-                        <div class="order-top">
-                            <div>
-                                <h3 class="customer">${escapeHtml(order.customer || "Khách hàng")}</h3>
-                                <div class="order-time">${escapeHtml(order.date)} · ${escapeHtml(order.time)}</div>
-                            </div>
-                            <div class="table-number">BÀN<strong>${escapeHtml(order.table)}</strong></div>
-                        </div>
-                        <div class="status ${escapeHtml(order.status)}">${statusText(order.status)}</div>
-                        ${order.note ? `<p class="note">📝 ${escapeHtml(order.note)}</p>` : ""}
-                        <ul class="items">
-                            ${items.map(item => `<li><span>${escapeHtml(item.name)}</span><span class="qty">× ${escapeHtml(item.qty)}</span></li>`).join("")}
-                        </ul>
-                        <div class="order-footer">
-                            <div class="total"><small>Tổng thanh toán</small>${Number(order.total || 0).toLocaleString("vi-VN")} đ</div>
-                            ${action}
-                        </div>
-                    </article>`;
+            const groups = new Map();
+            filtered.forEach(order => {
+                const key = orderDateKey(order);
+                if (!groups.has(key)) groups.set(key, []);
+                groups.get(key).push(order);
+            });
+
+            document.getElementById("orders").innerHTML = [...groups.entries()].map(([dateKey, orders]) => {
+                const dayTotal = orders.filter(order => order.status === "paid").reduce((sum, order) => sum + Number(order.total || 0), 0);
+                return `<section class="day-group">
+                    <div class="day-heading">
+                        <h2>${formatDateHeading(dateKey)}</h2>
+                        <div class="day-summary">${orders.length} đơn · doanh thu ${dayTotal.toLocaleString("vi-VN")} đ</div>
+                    </div>
+                    <div class="day-orders">${orders.map(renderOrderCard).join("")}</div>
+                </section>`;
             }).join("");
+        }
+
+        function renderOrderCard(order) {
+            const action = actionFor(order);
+            const archiveAction = archiveActionFor(order);
+            const items = Array.isArray(order.items) ? order.items : [];
+            return `<article class="order-card">
+                <div class="order-top">
+                    <div><h3 class="customer">${escapeHtml(order.customer || "Khách hàng")}</h3><div class="order-time">${escapeHtml(order.date)} · ${escapeHtml(order.time)}</div></div>
+                    <div class="table-number">BÀN<strong>${escapeHtml(order.table)}</strong></div>
+                </div>
+                <div class="status ${escapeHtml(order.status)}">${statusText(order.status)}</div>
+                ${order.note ? `<p class="note">📝 ${escapeHtml(order.note)}</p>` : ""}
+                <ul class="items">${items.map(item => `<li><span>${escapeHtml(item.name)}</span><span class="qty">× ${escapeHtml(item.qty)}</span></li>`).join("")}</ul>
+                <div class="order-footer"><div class="total"><small>Tổng thanh toán</small>${Number(order.total || 0).toLocaleString("vi-VN")} đ</div><div class="order-actions">${action}${archiveAction}</div></div>
+            </article>`;
+        }
+
+        function updateStatistics(orders) {
+            const revenue = orders.filter(order => order.status === "paid")
+                .reduce((sum, order) => sum + Number(order.total || 0), 0);
+            const pending = orders.filter(order => !["paid", "cancelled"].includes(order.status)).length;
+            const periodName = currentPeriod === "day" ? "trong ngày" : currentPeriod === "month" ? "trong tháng" : "tất cả";
+            document.getElementById("countOrder").textContent = orders.length;
+            document.getElementById("totalMoney").textContent = revenue.toLocaleString("vi-VN") + " đ";
+            document.getElementById("pendingOrder").textContent = pending;
+            document.getElementById("countLabel").textContent = `Đơn ${periodName}`;
+            document.getElementById("revenueLabel").textContent = `Doanh thu ${periodName}`;
+            document.getElementById("periodCaption").textContent = periodCaption();
+        }
+
+        function filterByPeriod(orders) {
+            if (currentPeriod === "all") return orders;
+            const selected = currentPeriod === "day" ? dayPicker.value : monthPicker.value;
+            if (!selected) return orders;
+            return orders.filter(order => currentPeriod === "day"
+                ? orderDateKey(order) === selected
+                : orderDateKey(order).startsWith(selected));
+        }
+
+        function orderDateKey(order) {
+            if (order.createdAt) {
+                const created = new Date(order.createdAt);
+                if (!Number.isNaN(created.getTime())) return localDateKey(created);
+            }
+            const match = String(order.date || "").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (match) return `${match[3]}-${match[2].padStart(2, "0")}-${match[1].padStart(2, "0")}`;
+            return "unknown";
+        }
+
+        function localDateKey(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        }
+
+        function formatDateHeading(key) {
+            if (key === "unknown") return "Không rõ ngày";
+            const [year, month, day] = key.split("-").map(Number);
+            const date = new Date(year, month - 1, day);
+            const label = date.toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
+            const todayKey = localDateKey(new Date());
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (key === todayKey) return `Hôm nay · ${label}`;
+            if (key === localDateKey(yesterday)) return `Hôm qua · ${label}`;
+            return label.charAt(0).toUpperCase() + label.slice(1);
+        }
+
+        function periodCaption() {
+            if (currentPeriod === "all") return "Đang xem toàn bộ lịch sử đơn hàng";
+            if (currentPeriod === "month" && monthPicker.value) {
+                const [year, month] = monthPicker.value.split("-");
+                return `Đang xem tháng ${month}/${year}`;
+            }
+            if (dayPicker.value) {
+                const [year, month, day] = dayPicker.value.split("-");
+                return `Đang xem ngày ${day}/${month}/${year}`;
+            }
+            return "Chọn thời gian để xem thống kê";
         }
 
         function actionFor(order) {
             const id = JSON.stringify(String(order._id || ""));
-            if (order.status === "pending") return `<button class="action-btn" onclick='changeStatus(${id}, "processing")'>Xác nhận đơn</button>`;
+            if (order.status === "pending") return `<button class="action-btn" onclick='changeStatus(${id}, "processing")'>Xác nhận đơn</button><button class="cancel-action-btn" onclick='cancelOrderByAdmin(${id})'>Hủy đơn</button>`;
             if (order.status === "processing") return `<button class="action-btn" onclick='changeStatus(${id}, "completed")'>Hoàn thành</button>`;
             if (order.status === "completed") return `<button class="action-btn" onclick='changeStatus(${id}, "paid")'>Thanh toán</button>`;
+            return "";
+        }
+
+        function archiveActionFor(order) {
+            const id = JSON.stringify(String(order._id || ""));
+            if (order.archived === true) return `<button class="archive-btn" onclick='archiveOrder(${id}, false)'>Khôi phục</button>`;
+            if (order.status === "paid") return `<button class="archive-btn" onclick='archiveOrder(${id}, true)'>Lưu trữ</button>`;
             return "";
         }
 
@@ -448,7 +683,8 @@
                 pending: "● Chờ xác nhận",
                 processing: "● Đang chế biến",
                 completed: "● Hoàn thành",
-                paid: "● Đã thanh toán"
+                paid: "● Đã thanh toán",
+                cancelled: "● Đã hủy"
             })[status] || "● Chờ xác nhận";
         }
 
@@ -458,43 +694,94 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status })
             });
+            const data = await res.json().catch(() => ({}));
             if (res.ok) loadOrders();
+            else alert(data.message || "Không thể cập nhật trạng thái đơn.");
+        }
+
+        async function cancelOrderByAdmin(id) {
+            if (!confirm("Bạn có chắc muốn hủy đơn hàng này?")) return;
+            await changeStatus(id, "cancelled");
+        }
+
+        async function archiveOrder(id, archived) {
+            const res = await fetch(`/api/orders/${encodeURIComponent(id)}/archive`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ archived })
+            });
+            if (res.ok) loadOrders();
+            else alert(archived ? "Không thể lưu trữ đơn này." : "Không thể khôi phục đơn này.");
         }
 
         async function setupNotifications() {
-            if (!("serviceWorker" in navigator)) {
+            if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
                 setNotificationState("unsupported");
                 return;
             }
             try {
                 notificationRegistration = await navigator.serviceWorker.register("/admin-sw.js");
-                if (!("Notification" in window)) {
-                    setNotificationState("unsupported");
-                    return;
+                pushSubscription = await notificationRegistration.pushManager.getSubscription();
+                if (pushSubscription) {
+                    await savePushSubscription(pushSubscription);
                 }
-                setNotificationState(Notification.permission);
+                setNotificationState(Notification.permission === "granted" && pushSubscription ? "granted" : Notification.permission);
             } catch {
-                setNotificationState("unsupported");
+                setNotificationState("error");
             }
         }
 
         async function enableNotifications() {
             unlockAudio();
-            if (!("Notification" in window)) return setNotificationState("unsupported");
+            if (!("Notification" in window) || !notificationRegistration?.pushManager) return setNotificationState("unsupported");
             if (Notification.permission === "denied") {
                 setNotificationState("denied");
                 alert("Thông báo đang bị chặn. Hãy mở cài đặt trang web trên điện thoại và cho phép Thông báo.");
                 return;
             }
-            const permission = await Notification.requestPermission();
-            setNotificationState(permission);
-            if (permission === "granted" && notificationRegistration) {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission !== "granted") return setNotificationState(permission);
+
+                const keyResponse = await fetch("/api/push/public-key");
+                const keyData = await keyResponse.json().catch(() => ({}));
+                if (!keyResponse.ok || !keyData.publicKey) throw new Error(keyData.message || "Server chưa cấu hình Web Push");
+
+                pushSubscription = await notificationRegistration.pushManager.getSubscription();
+                if (!pushSubscription) {
+                    pushSubscription = await notificationRegistration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
+                    });
+                }
+                await savePushSubscription(pushSubscription);
+                setNotificationState("granted");
                 notificationRegistration.showNotification("Đã bật thông báo", {
-                    body: "Điện thoại sẽ báo khi có đơn mới trong lúc trang admin đang hoạt động.",
+                    body: "Điện thoại sẽ báo đơn mới ngay cả khi ứng dụng đang đóng.",
                     tag: "notification-enabled",
                     data: { url: "/admin.html" }
                 });
+            } catch (error) {
+                setNotificationState("error");
+                alert(error.message || "Không thể đăng ký nhận thông báo. Vui lòng thử lại.");
             }
+        }
+
+        async function savePushSubscription(subscription) {
+            const response = await fetch("/api/push/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(subscription)
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.message || "Không lưu được thiết bị nhận thông báo");
+        }
+
+        function urlBase64ToUint8Array(value) {
+            const padding = "=".repeat((4 - value.length % 4) % 4);
+            const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+            const raw = atob(base64);
+            return Uint8Array.from([...raw].map(char => char.charCodeAt(0)));
         }
 
         function setNotificationState(state) {
@@ -508,12 +795,16 @@
             bar.classList.toggle("enabled", state === "granted");
             if (state === "granted") {
                 title.textContent = "Thông báo đã được bật";
-                text.textContent = "Đang chờ đơn mới từ khách hàng.";
+                text.textContent = "Sẽ nhận đơn mới kể cả khi ứng dụng đang đóng.";
                 button.textContent = "Đã bật ✓";
             } else if (state === "denied") {
                 title.textContent = "Thông báo đang bị chặn";
                 text.textContent = "Cho phép thông báo trong cài đặt trình duyệt.";
                 button.textContent = "Cách bật";
+            } else if (state === "error") {
+                title.textContent = "Chưa đăng ký được thiết bị";
+                text.textContent = "Kiểm tra kết nối rồi bấm thử lại.";
+                button.textContent = "Thử lại";
             } else if (state === "unsupported") {
                 if (isIOS && !isStandalone) {
                     title.textContent = "Cần mở dưới dạng ứng dụng";
@@ -557,7 +848,7 @@
             if (order._id) knownOrderIds.add(String(order._id));
             playNotificationSound();
             const body = `Bàn ${order.table || "-"} · ${order.customer || "Khách hàng"}${order.note ? ` · ${order.note}` : ""}`;
-            if ("Notification" in window && Notification.permission === "granted" && notificationRegistration) {
+            if (!pushSubscription && "Notification" in window && Notification.permission === "granted" && notificationRegistration) {
                 await notificationRegistration.showNotification("🔔 Có đơn hàng mới", {
                     body,
                     tag: `order-${order._id || Date.now()}`,

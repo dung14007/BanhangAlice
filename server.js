@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const mongoose = require("mongoose");
 const { Server } = require("socket.io");
+require("dotenv").config({ path: ".env.local" });
 require("dotenv").config();
 
 const app = express();
@@ -25,6 +26,7 @@ app.set("io", io);
 
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/menu", require("./routes/menuRoutes"));
+app.use("/api/push", require("./routes/pushRoutes"));
 
 io.on("connection", socket => {
 

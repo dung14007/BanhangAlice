@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f97316">
+    <meta name="theme-color" content="#fffaf5">
     <title>Theo dõi đơn hàng</title>
     <style>
         :root {
             --primary: #f97316;
-            --primary-dark: #ea580c;
-            --ink: #172033;
-            --muted: #667085;
-            --line: #e7eaf0;
+            --primary-dark: #c94f0a;
+            --ink: #392a22;
+            --muted: #7b6a61;
+            --line: #efe2da;
             --surface: #fff;
-            --page: #f6f7fb;
+            --page: #fffaf5;
             --green: #10b981;
-            --shadow: 0 8px 24px rgba(23, 32, 51, .08);
+            --shadow: 0 8px 24px rgba(106, 72, 50, .07);
         }
 
         * { box-sizing: border-box; }
@@ -29,9 +29,11 @@
         button { font: inherit; }
 
         .app-header {
-            color: #fff;
-            background: linear-gradient(135deg, #fb7c21, #f15a0a);
-            box-shadow: 0 4px 18px rgba(234, 88, 12, .22);
+            color: var(--ink);
+            background: rgba(255, 255, 255, .94);
+            border-bottom: 1px solid var(--line);
+            box-shadow: 0 4px 18px rgba(106, 72, 50, .06);
+            backdrop-filter: blur(12px);
         }
         .header-inner,
         main {
@@ -52,17 +54,17 @@
             display: grid;
             place-items: center;
             border-radius: 13px;
-            background: rgba(255, 255, 255, .18);
+            background: #fff0e4;
             font-size: 21px;
         }
         .brand h1 { margin: 0; font-size: 20px; }
-        .brand p { margin: 2px 0 0; opacity: .85; font-size: 12px; }
+        .brand p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
         .back-btn {
             padding: 9px 12px;
-            border: 1px solid rgba(255, 255, 255, .28);
+            border: 1px solid #ffd6bd;
             border-radius: 10px;
-            color: #fff;
-            background: rgba(255, 255, 255, .14);
+            color: var(--primary-dark);
+            background: #fff4eb;
             cursor: pointer;
             font-weight: 700;
         }
@@ -117,7 +119,7 @@
             height: 3px;
             border-radius: 3px;
         }
-        .progress::before { background: #e7eaf0; }
+        .progress::before { background: #eee2da; }
         .progress-bar { right: auto; width: 0; background: var(--primary); transition: width .35s ease; }
         .step { position: relative; z-index: 1; text-align: center; color: #98a2b3; }
         .step-dot {
@@ -128,8 +130,8 @@
             margin: 0 auto 8px;
             border: 3px solid var(--surface);
             border-radius: 50%;
-            background: #dfe3e9;
-            box-shadow: 0 0 0 1px #dfe3e9;
+            background: #eadfd8;
+            box-shadow: 0 0 0 1px #eadfd8;
             font-size: 12px;
             font-weight: 800;
         }
@@ -148,6 +150,7 @@
             font-weight: 750;
         }
         .current-status.paid { color: #047857; background: #dff8ee; }
+        .current-status.cancelled { color: #b42318; background: #fee4e2; }
 
         .order-content { padding: 0 20px 20px; }
         .section-title { margin: 0 0 10px; font-size: 15px; }
@@ -175,6 +178,7 @@
         .total-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding-top: 18px; }
         .total-label { color: var(--muted); font-size: 13px; }
         .total { color: var(--primary-dark); font-size: 25px; font-weight: 850; }
+        .cancel-order-btn { width: 100%; min-height: 44px; margin-top: 15px; border: 1px solid #fecaca; border-radius: 10px; color: #b42318; background: #fff5f5; cursor: pointer; font-weight: 750; }
 
         .help-card {
             display: flex;
@@ -185,10 +189,10 @@
             border: 1px solid var(--line);
             border-radius: 14px;
             color: var(--muted);
-            background: rgba(255, 255, 255, .7);
+            background: rgba(255, 255, 255, .86);
             font-size: 13px;
         }
-        .help-icon { width: 34px; height: 34px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 10px; background: #eef1f5; }
+        .help-icon { width: 34px; height: 34px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 10px; background: #fff0e4; }
 
         .state-card { padding: 48px 20px; text-align: center; }
         .state-icon { display: block; margin-bottom: 10px; font-size: 38px; }
@@ -205,7 +209,7 @@
             .brand p { display: none; }
             .back-btn { padding: 8px 9px; border-radius: 9px; font-size: 11px; }
             main { padding: 12px 0 24px; }
-            .order-card { border-radius: 14px; box-shadow: 0 4px 14px rgba(23, 32, 51, .07); }
+            .order-card { border-radius: 14px; box-shadow: 0 4px 14px rgba(106, 72, 50, .07); }
             .order-head { padding: 15px; }
             .customer { font-size: 18px; }
             .order-time { font-size: 11px; }
@@ -257,7 +261,8 @@
                 pending: "Đơn đang chờ nhà hàng xác nhận",
                 processing: "Nhà hàng đang chuẩn bị món",
                 completed: "Món đã hoàn thành, sắp được phục vụ",
-                paid: "Đơn hàng đã thanh toán"
+                paid: "Đơn hàng đã thanh toán",
+                cancelled: "Đơn hàng đã được hủy"
             })[status] || "Đơn đang chờ xác nhận";
         }
 
@@ -288,9 +293,11 @@
         }
 
         function renderOrder(order) {
+            const isCancelled = order.status === "cancelled";
             const currentIndex = Math.max(0, statuses.indexOf(order.status));
             const progressWidth = `${(currentIndex / (statuses.length - 1)) * 75}%`;
             const items = Array.isArray(order.items) ? order.items : [];
+            const orderId = JSON.stringify(String(order._id || ""));
             const steps = [
                 ["pending", "1", "Chờ xác nhận"],
                 ["processing", "2", "Đang chế biến"],
@@ -304,18 +311,19 @@
                     <div class="table-box">BÀN<strong>${escapeHtml(order.table)}</strong></div>
                 </div>
                 <section class="status-section">
-                    <div class="status-heading"><h2>Trạng thái đơn</h2><span class="live-badge"><span class="live-dot"></span>Đang cập nhật</span></div>
+                    <div class="status-heading"><h2>Trạng thái đơn</h2><span class="live-badge"><span class="live-dot"></span>${["paid", "cancelled"].includes(order.status) ? "Đã kết thúc" : "Đang cập nhật"}</span></div>
                     <div class="progress">
                         <div class="progress-bar" style="width:${progressWidth}"></div>
-                        ${steps.map((step, index) => `<div class="step ${index < currentIndex ? "done" : index === currentIndex ? "active" : ""}"><div class="step-dot">${index < currentIndex ? "✓" : step[1]}</div><span class="step-label">${step[2]}</span></div>`).join("")}
+                        ${steps.map((step, index) => `<div class="step ${isCancelled ? "" : index < currentIndex ? "done" : index === currentIndex ? "active" : ""}"><div class="step-dot">${!isCancelled && index < currentIndex ? "✓" : step[1]}</div><span class="step-label">${step[2]}</span></div>`).join("")}
                     </div>
-                    <div class="current-status ${order.status === "paid" ? "paid" : ""}">${statusText(order.status)}</div>
+                    <div class="current-status ${order.status === "paid" ? "paid" : isCancelled ? "cancelled" : ""}">${statusText(order.status)}</div>
                 </section>
                 <section class="order-content">
                     <h3 class="section-title">Món đã gọi</h3>
                     <ul class="items">${items.map(item => `<li><span class="item-name">${escapeHtml(item.name)}</span><span class="item-qty">× ${escapeHtml(item.qty)}</span></li>`).join("")}</ul>
                     ${order.note ? `<p class="note" style="display:block">📝 ${escapeHtml(order.note)}</p>` : ""}
                     <div class="total-row"><span class="total-label">Tổng thanh toán</span><strong class="total">${Number(order.total || 0).toLocaleString("vi-VN")} đ</strong></div>
+                    ${order.status === "pending" ? `<button class="cancel-order-btn" onclick='cancelOrder(${orderId})'>Hủy đơn hàng</button>` : ""}
                 </section>`;
             helpCard.hidden = false;
         }
@@ -323,6 +331,26 @@
         function renderState(icon, title, message, showMenuButton) {
             orderCard.innerHTML = `<div class="state-card"><span class="state-icon">${icon}</span><h2>${title}</h2><p>${message}</p>${showMenuButton ? '<button class="primary-btn" onclick="location.href=\'/index.html\'">Xem thực đơn</button>' : '<button class="primary-btn" onclick="loadOrder()">Thử lại</button>'}</div>`;
             helpCard.hidden = true;
+        }
+
+        async function cancelOrder(id) {
+            if (!confirm("Bạn có chắc muốn hủy đơn hàng này?")) return;
+            try {
+                const res = await fetch(`/api/orders/${encodeURIComponent(id)}/cancel`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        customer: localStorage.getItem("customerName"),
+                        table: localStorage.getItem("table")
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) throw new Error(data.message || "Không thể hủy đơn");
+                lastOrderSignature = "";
+                loadOrder();
+            } catch (error) {
+                alert(error.message || "Không thể hủy đơn hàng.");
+            }
         }
 
         socket.on("order-status", loadOrder);

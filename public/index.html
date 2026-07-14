@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f97316">
-    <title>Thực đơn nhà hàng</title>
+    <meta name="theme-color" content="#fffaf5">
+    <title>Thực đơn Coffee Alice</title>
     <style>
         :root {
             --primary: #f97316;
-            --primary-dark: #ea580c;
-            --ink: #172033;
-            --muted: #667085;
-            --line: #e7eaf0;
+            --primary-dark: #c94f0a;
+            --ink: #392a22;
+            --muted: #7b6a61;
+            --line: #efe2da;
             --surface: #fff;
-            --page: #f6f7fb;
-            --shadow: 0 8px 24px rgba(23, 32, 51, .08);
+            --page: #fffaf5;
+            --shadow: 0 8px 24px rgba(106, 72, 50, .07);
         }
 
         * { box-sizing: border-box; }
@@ -35,9 +35,11 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            color: #fff;
-            background: linear-gradient(135deg, #fb7c21, #f15a0a);
-            box-shadow: 0 4px 18px rgba(234, 88, 12, .22);
+            color: var(--ink);
+            background: rgba(255, 255, 255, .94);
+            border-bottom: 1px solid var(--line);
+            box-shadow: 0 4px 18px rgba(106, 72, 50, .06);
+            backdrop-filter: blur(12px);
         }
         .header-inner,
         main {
@@ -58,17 +60,17 @@
             display: grid;
             place-items: center;
             border-radius: 13px;
-            background: rgba(255, 255, 255, .18);
+            background: #fff0e4;
             font-size: 21px;
         }
         .brand h1 { margin: 0; font-size: 20px; }
-        .brand p { margin: 2px 0 0; opacity: .85; font-size: 12px; }
+        .brand p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
         .table-chip {
             padding: 9px 12px;
-            border: 1px solid rgba(255, 255, 255, .28);
+            border: 1px solid #ffd6bd;
             border-radius: 11px;
-            color: #fff;
-            background: rgba(255, 255, 255, .14);
+            color: var(--primary-dark);
+            background: #fff4eb;
             cursor: pointer;
             font-weight: 700;
             white-space: nowrap;
@@ -84,8 +86,8 @@
             padding: 18px 20px;
             border: 1px solid var(--line);
             border-radius: 16px;
-            background: var(--surface);
-            box-shadow: var(--shadow);
+            background: linear-gradient(135deg, #fff, #fff7f0);
+            box-shadow: 0 6px 20px rgba(106, 72, 50, .06);
         }
         .welcome-label { margin: 0 0 4px; color: var(--muted); font-size: 13px; }
         .welcome h2 { margin: 0; font-size: 21px; }
@@ -172,7 +174,8 @@
             background: var(--surface);
             box-shadow: var(--shadow);
         }
-        .food-image { position: relative; height: 175px; overflow: hidden; background: #e9edf2; }
+        .food-card.sold-out img { filter: grayscale(.7); opacity: .68; }
+        .food-image { position: relative; height: 175px; overflow: hidden; background: #f3ebe5; }
         .food-image img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .3s; }
         .food-card:hover .food-image img { transform: scale(1.03); }
         .food-category {
@@ -184,13 +187,14 @@
             overflow: hidden;
             border-radius: 999px;
             color: #fff;
-            background: rgba(23, 32, 51, .76);
+            background: rgba(67, 45, 33, .72);
             backdrop-filter: blur(5px);
             text-overflow: ellipsis;
             white-space: nowrap;
             font-size: 11px;
             font-weight: 700;
         }
+        .sold-out-badge { position: absolute; right: 9px; top: 9px; padding: 5px 8px; border-radius: 999px; color: #991b1b; background: rgba(254,226,226,.95); font-size: 10px; font-weight: 800; }
         .food-info { padding: 14px; }
         .food-info h3 { min-height: 43px; margin: 0 0 8px; font-size: 16px; line-height: 1.35; }
         .food-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -207,6 +211,7 @@
         }
         .add-btn:active { transform: scale(.96); }
         .add-btn.added { color: var(--primary-dark); background: #fff1e7; }
+        .add-btn:disabled { color: #9b8b82; background: #eee7e2; cursor: not-allowed; }
         .empty-state {
             grid-column: 1 / -1;
             padding: 52px 20px;
@@ -230,14 +235,15 @@
             justify-content: space-between;
             gap: 14px;
             padding: 10px 11px 10px 17px;
-            border: 1px solid rgba(255, 255, 255, .15);
+            border: 1px solid #f0ded2;
             border-radius: 17px;
-            color: #fff;
-            background: #172033;
-            box-shadow: 0 12px 30px rgba(23, 32, 51, .3);
+            color: var(--ink);
+            background: rgba(255, 255, 255, .96);
+            box-shadow: 0 12px 34px rgba(106, 72, 50, .16);
+            backdrop-filter: blur(12px);
             transform: translateX(-50%);
         }
-        .cart-label { color: #b8c0cf; font-size: 12px; }
+        .cart-label { color: var(--muted); font-size: 12px; }
         .cart-summary strong { display: block; margin-top: 2px; font-size: 18px; }
         .view-cart-btn {
             min-height: 44px;
@@ -249,14 +255,14 @@
             cursor: pointer;
             font-weight: 750;
         }
-        .view-cart-btn:disabled { color: #9199a8; background: #343e52; cursor: default; }
+        .view-cart-btn:disabled { color: #a49389; background: #f2ebe6; cursor: default; }
 
         .overlay {
             position: fixed;
             inset: 0;
             z-index: 100;
             display: none;
-            background: rgba(15, 23, 42, .58);
+            background: rgba(57, 42, 34, .36);
             backdrop-filter: blur(3px);
         }
         .overlay.open { display: block; }
@@ -306,7 +312,7 @@
         .cart-dialog { padding: 0; }
         .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
         .cart-head h2 { margin: 0; font-size: 21px; }
-        .close-btn { width: 38px; height: 38px; border: 0; border-radius: 10px; color: var(--muted); background: #f0f2f5; cursor: pointer; font-size: 18px; }
+        .close-btn { width: 38px; height: 38px; border: 0; border-radius: 10px; color: var(--muted); background: #f7efe9; cursor: pointer; font-size: 18px; }
         .cart-items { max-height: 44vh; padding: 7px 20px; overflow-y: auto; }
         .cart-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
         .cart-item-name { margin: 0 0 5px; font-size: 14px; font-weight: 700; }
@@ -328,7 +334,7 @@
             padding: 10px 14px;
             border-radius: 10px;
             color: #fff;
-            background: #172033;
+            background: #4b3529;
             box-shadow: var(--shadow);
             opacity: 0;
             pointer-events: none;
@@ -367,7 +373,7 @@
             .categories { gap: 6px; margin-bottom: 14px; }
             .category-btn { padding: 7px 11px; font-size: 12px; }
             .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-            .food-card { border-radius: 13px; box-shadow: 0 4px 14px rgba(23, 32, 51, .07); }
+            .food-card { border-radius: 13px; box-shadow: 0 4px 14px rgba(106, 72, 50, .07); }
             .food-image { height: 112px; }
             .food-category { left: 7px; bottom: 7px; padding: 4px 7px; font-size: 9px; }
             .food-info { padding: 9px; }
@@ -557,16 +563,18 @@
             }
             gridElement.innerHTML = list.map(food => {
                 const quantity = cart[food._id]?.qty || 0;
-                return `<article class="food-card">
+                const available = food.available !== false;
+                return `<article class="food-card ${available ? "" : "sold-out"}">
                     <div class="food-image">
                         <img src="${escapeHtml(food.img || food.image || "")}" alt="${escapeHtml(food.name)}" loading="lazy" onerror="this.style.opacity='.25'">
                         <span class="food-category">${escapeHtml(food.category || "Món ăn")}</span>
+                        ${available ? "" : '<span class="sold-out-badge">Hết món</span>'}
                     </div>
                     <div class="food-info">
                         <h3>${escapeHtml(food.name)}</h3>
                         <div class="food-bottom">
                             <div class="price">${Number(food.price || 0).toLocaleString("vi-VN")} đ</div>
-                            <button class="add-btn ${quantity ? "added" : ""}" onclick="add('${escapeHtml(food._id)}')">${quantity ? `Đã thêm ${quantity}` : "+ Thêm"}</button>
+                            <button class="add-btn ${quantity ? "added" : ""}" onclick="add('${escapeHtml(food._id)}')" ${available ? "" : "disabled"}>${available ? (quantity ? `Đã thêm ${quantity}` : "+ Thêm") : "Hết món"}</button>
                         </div>
                     </div>
                 </article>`;
@@ -594,6 +602,7 @@
         function add(id) {
             const food = foods.find(item => item._id === id);
             if (!food) return;
+            if (food.available === false) return showToast(`${food.name} hiện đã hết.`);
             if (!cart[id]) cart[id] = { food, qty: 0 };
             cart[id].qty++;
             updateCart();
@@ -663,14 +672,15 @@
                     })
                 });
                 const data = await res.json();
-                if (!res.ok || !data.success) throw new Error();
+                if (!res.ok || !data.success) throw new Error(data.message || "Đặt món thất bại.");
                 cart = {};
                 updateCart();
                 location.href = "/my-order.html";
-            } catch {
-                showToast("Đặt món thất bại. Vui lòng thử lại.");
+            } catch (error) {
+                showToast(error.message || "Đặt món thất bại. Vui lòng thử lại.");
                 placeOrderBtn.disabled = false;
                 placeOrderBtn.textContent = "Đặt món ngay";
+                loadMenu();
             }
         }
 

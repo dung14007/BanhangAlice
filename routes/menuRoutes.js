@@ -83,6 +83,35 @@ router.put("/:id", upload.single("image"), async(req,res)=>{
 
 });
 
+// Bật/tắt trạng thái còn món
+router.patch("/:id/availability", async (req, res) => {
+    try {
+        if (typeof req.body.available !== "boolean") {
+            return res.status(400).json({
+                success: false,
+                message: "Trạng thái món không hợp lệ"
+            });
+        }
+
+        const food = await Menu.findByIdAndUpdate(
+            req.params.id,
+            { available: req.body.available },
+            { new: true }
+        );
+
+        if (!food) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy món ăn"
+            });
+        }
+
+        res.json({ success: true, food });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // Xóa món
 router.delete("/:id", async (req, res) => {
 

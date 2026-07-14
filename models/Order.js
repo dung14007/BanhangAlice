@@ -16,6 +16,13 @@ const OrderSchema = new mongoose.Schema({
         default: "pending"
     },
 
+    archived: {
+        type: Boolean,
+        default: false
+    },
+    archivedAt: Date,
+    cancelledAt: Date,
+
     date: String,
     time: String,
     createdAt: {
