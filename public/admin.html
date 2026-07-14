@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Quản lý đơn hàng</title>
     <style>
         :root {
@@ -101,6 +102,34 @@
             background: var(--surface);
             color: var(--ink);
         }
+
+        .notification-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding: 13px 15px;
+            border: 1px solid #fed7aa;
+            border-radius: 13px;
+            color: #9a4b0a;
+            background: #fff7ed;
+        }
+        .notification-copy { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .notification-copy strong { display: block; margin-bottom: 2px; color: #7c3d0a; font-size: 14px; }
+        .notification-btn {
+            flex: 0 0 auto;
+            padding: 9px 12px;
+            border: 0;
+            border-radius: 9px;
+            color: #fff;
+            background: var(--primary);
+            cursor: pointer;
+            font-weight: 750;
+        }
+        .notification-bar.enabled { border-color: #a7f3d0; color: #047857; background: #ecfdf5; }
+        .notification-bar.enabled .notification-copy strong { color: #047857; }
+        .notification-bar.enabled .notification-btn { color: #047857; background: #d1fae5; }
 
         .dashboard {
             display: grid;
@@ -253,6 +282,10 @@
             .page-heading { align-items: center; }
             .page-heading h2 { font-size: 21px; }
             .page-heading p { display: none; }
+            .notification-bar { align-items: flex-start; padding: 11px 12px; }
+            .notification-copy { font-size: 11px; }
+            .notification-copy strong { font-size: 13px; }
+            .notification-btn { padding: 8px 9px; font-size: 11px; }
             .dashboard { gap: 10px; }
             .stat-card { padding: 16px; border-radius: 14px; }
             .stat-value { font-size: 23px; }
@@ -286,6 +319,11 @@
             <button class="refresh-btn" onclick="loadOrders()">↻ Làm mới</button>
         </div>
 
+        <section class="notification-bar" id="notificationBar">
+            <div class="notification-copy"><span>🔔</span><div><strong id="notificationTitle">Bật thông báo đơn mới</strong><span id="notificationText">Nhận chuông và thông báo trên điện thoại khi có khách đặt món.</span></div></div>
+            <button class="notification-btn" id="notificationBtn" onclick="enableNotifications()">Bật ngay</button>
+        </section>
+
         <section class="dashboard" aria-label="Thống kê">
             <article class="stat-card">
                 <p class="stat-label">Tổng đơn hàng</p>
@@ -312,10 +350,13 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
-        const audio = new Audio("https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg");
+        const socket = io({ reconnection: true, reconnectionAttempts: Infinity });
         let allOrders = [];
         let currentFilter = "all";
+        let hasLoadedOrders = false;
+        let knownOrderIds = new Set();
+        let notificationRegistration = null;
+        let audioContext = null;
 
         const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
             "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
@@ -334,7 +375,14 @@
             try {
                 const res = await fetch("/api/orders");
                 if (!res.ok) throw new Error();
-                allOrders = await res.json();
+                const data = await res.json();
+                if (hasLoadedOrders) {
+                    data.filter(order => order._id && !knownOrderIds.has(String(order._id)))
+                        .forEach(notifyNewOrder);
+                }
+                knownOrderIds = new Set(data.map(order => String(order._id || "")));
+                hasLoadedOrders = true;
+                allOrders = data;
                 document.getElementById("countOrder").textContent = allOrders.length;
                 const money = allOrders
                     .filter(order => order.status === "paid")
@@ -407,13 +455,108 @@
             if (res.ok) loadOrders();
         }
 
+        async function setupNotifications() {
+            if (!("serviceWorker" in navigator) || !("Notification" in window)) {
+                setNotificationState("unsupported");
+                return;
+            }
+            try {
+                notificationRegistration = await navigator.serviceWorker.register("/admin-sw.js");
+                setNotificationState(Notification.permission);
+            } catch {
+                setNotificationState("unsupported");
+            }
+        }
+
+        async function enableNotifications() {
+            unlockAudio();
+            if (!("Notification" in window)) return setNotificationState("unsupported");
+            if (Notification.permission === "denied") {
+                setNotificationState("denied");
+                alert("Thông báo đang bị chặn. Hãy mở cài đặt trang web trên điện thoại và cho phép Thông báo.");
+                return;
+            }
+            const permission = await Notification.requestPermission();
+            setNotificationState(permission);
+            if (permission === "granted" && notificationRegistration) {
+                notificationRegistration.showNotification("Đã bật thông báo", {
+                    body: "Điện thoại sẽ báo khi có đơn mới trong lúc trang admin đang hoạt động.",
+                    tag: "notification-enabled",
+                    data: { url: "/admin.html" }
+                });
+            }
+        }
+
+        function setNotificationState(state) {
+            const bar = document.getElementById("notificationBar");
+            const title = document.getElementById("notificationTitle");
+            const text = document.getElementById("notificationText");
+            const button = document.getElementById("notificationBtn");
+            bar.classList.toggle("enabled", state === "granted");
+            if (state === "granted") {
+                title.textContent = "Thông báo đã được bật";
+                text.textContent = "Đang chờ đơn mới từ khách hàng.";
+                button.textContent = "Đã bật ✓";
+            } else if (state === "denied") {
+                title.textContent = "Thông báo đang bị chặn";
+                text.textContent = "Cho phép thông báo trong cài đặt trình duyệt.";
+                button.textContent = "Cách bật";
+            } else if (state === "unsupported") {
+                title.textContent = "Trình duyệt chưa hỗ trợ thông báo";
+                text.textContent = "Hãy mở trang bằng Chrome hoặc cài trang vào màn hình chính.";
+                button.style.display = "none";
+            }
+        }
+
+        function unlockAudio() {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            if (!audioContext) audioContext = new AudioCtx();
+            if (audioContext.state === "suspended") audioContext.resume().catch(() => {});
+        }
+
+        function playNotificationSound() {
+            if (!audioContext || audioContext.state !== "running") return;
+            [0, .22].forEach(delay => {
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                oscillator.type = "sine";
+                oscillator.frequency.value = delay ? 880 : 660;
+                gain.gain.setValueAtTime(.18, audioContext.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + delay + .18);
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+                oscillator.start(audioContext.currentTime + delay);
+                oscillator.stop(audioContext.currentTime + delay + .2);
+            });
+        }
+
+        async function notifyNewOrder(order) {
+            if (!order) return;
+            if (order._id) knownOrderIds.add(String(order._id));
+            playNotificationSound();
+            const body = `Bàn ${order.table || "-"} · ${order.customer || "Khách hàng"}${order.note ? ` · ${order.note}` : ""}`;
+            if ("Notification" in window && Notification.permission === "granted" && notificationRegistration) {
+                await notificationRegistration.showNotification("🔔 Có đơn hàng mới", {
+                    body,
+                    tag: `order-${order._id || Date.now()}`,
+                    renotify: true,
+                    vibrate: [200, 100, 200],
+                    data: { url: "/admin.html" }
+                }).catch(() => {});
+            } else if (!document.hidden) {
+                alert(`🔔 Có đơn mới\nBàn: ${order.table}\nKhách: ${order.customer}`);
+            }
+        }
+
         socket.on("newOrder", data => {
-            alert(`🔔 Có đơn mới\nBàn: ${data.order.table}\nKhách: ${data.order.customer}`);
+            notifyNewOrder(data.order);
             loadOrders();
         });
-        socket.on("new-order", () => { audio.play().catch(() => {}); loadOrders(); });
         socket.on("order-status", loadOrders);
+        setupNotifications();
         loadOrders();
+        setInterval(loadOrders, 15000);
     </script>
 </body>
 </html>
