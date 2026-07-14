@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f97316">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Quản lý đơn">
+    <link rel="manifest" href="/admin-manifest.webmanifest">
+    <link rel="icon" href="/admin-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/admin-icon.svg">
     <title>Quản lý đơn hàng</title>
     <style>
         :root {
@@ -456,12 +462,16 @@
         }
 
         async function setupNotifications() {
-            if (!("serviceWorker" in navigator) || !("Notification" in window)) {
+            if (!("serviceWorker" in navigator)) {
                 setNotificationState("unsupported");
                 return;
             }
             try {
                 notificationRegistration = await navigator.serviceWorker.register("/admin-sw.js");
+                if (!("Notification" in window)) {
+                    setNotificationState("unsupported");
+                    return;
+                }
                 setNotificationState(Notification.permission);
             } catch {
                 setNotificationState("unsupported");
@@ -492,6 +502,9 @@
             const title = document.getElementById("notificationTitle");
             const text = document.getElementById("notificationText");
             const button = document.getElementById("notificationBtn");
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+            button.style.display = "block";
             bar.classList.toggle("enabled", state === "granted");
             if (state === "granted") {
                 title.textContent = "Thông báo đã được bật";
@@ -502,8 +515,16 @@
                 text.textContent = "Cho phép thông báo trong cài đặt trình duyệt.";
                 button.textContent = "Cách bật";
             } else if (state === "unsupported") {
-                title.textContent = "Trình duyệt chưa hỗ trợ thông báo";
-                text.textContent = "Hãy mở trang bằng Chrome hoặc cài trang vào màn hình chính.";
+                if (isIOS && !isStandalone) {
+                    title.textContent = "Cần mở dưới dạng ứng dụng";
+                    text.textContent = "Xóa biểu tượng cũ, thêm lại vào Màn hình chính rồi mở từ biểu tượng mới.";
+                } else if (isIOS) {
+                    title.textContent = "Phiên bản iPhone chưa hỗ trợ";
+                    text.textContent = "Thông báo web yêu cầu iOS hoặc iPadOS 16.4 trở lên.";
+                } else {
+                    title.textContent = "Trình duyệt chưa hỗ trợ thông báo";
+                    text.textContent = "Hãy mở trang bằng Chrome hoặc Safari phiên bản mới.";
+                }
                 button.style.display = "none";
             }
         }
