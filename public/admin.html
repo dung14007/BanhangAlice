@@ -111,6 +111,7 @@
             background: var(--surface);
             color: var(--ink);
         }
+        .refresh-btn:disabled { cursor: wait; opacity: .7; transform: none; }
 
         .notification-bar {
             display: flex;
@@ -412,7 +413,7 @@
                 <h2>Thống kê đơn hàng</h2>
                 <p>Xem doanh thu và đơn hàng theo từng ngày hoặc tháng.</p>
             </div>
-            <button class="refresh-btn" onclick="loadOrders()">↻ Làm mới</button>
+            <button class="refresh-btn" id="refreshBtn" type="button" onclick="refreshOrders()">↻ Làm mới</button>
         </div>
 
         <section class="notification-bar" id="notificationBar">
@@ -532,7 +533,7 @@
         async function loadOrders() {
             const orders = document.getElementById("orders");
             try {
-                const res = await fetch("/api/orders");
+                const res = await fetch("/api/orders", { cache: "no-store" });
                 if (!res.ok) throw new Error();
                 const data = await res.json();
                 if (hasLoadedOrders) {
@@ -543,9 +544,26 @@
                 hasLoadedOrders = true;
                 allOrders = data;
                 renderOrders();
+                return true;
             } catch {
                 orders.innerHTML = '<div class="empty-state"><span>⚠️</span>Không tải được đơn hàng. Vui lòng thử lại.</div>';
+                return false;
             }
+        }
+
+        async function refreshOrders() {
+            const button = document.getElementById("refreshBtn");
+            if (button.disabled) return;
+
+            button.disabled = true;
+            button.textContent = "↻ Đang tải...";
+            const refreshed = await loadOrders();
+            button.textContent = refreshed ? "✓ Đã làm mới" : "↻ Thử lại";
+
+            window.setTimeout(() => {
+                button.disabled = false;
+                button.textContent = "↻ Làm mới";
+            }, 1200);
         }
 
         function renderOrders() {
