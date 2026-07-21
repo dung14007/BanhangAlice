@@ -485,6 +485,7 @@
         let notificationRegistration = null;
         let pushSubscription = null;
         let audioContext = null;
+        const ORDER_TIME_ZONE = "Asia/Ho_Chi_Minh";
 
         const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
             "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
@@ -493,9 +494,9 @@
         const dayPicker = document.getElementById("dayPicker");
         const monthPicker = document.getElementById("monthPicker");
         const periodType = document.getElementById("periodType");
-        const today = new Date();
-        dayPicker.value = localDateKey(today);
-        monthPicker.value = localDateKey(today).slice(0, 7);
+        const todayKey = dateKeyInOrderTimeZone(new Date());
+        dayPicker.value = todayKey;
+        monthPicker.value = todayKey.slice(0, 7);
 
         periodType.addEventListener("change", () => {
             currentPeriod = periodType.value;
@@ -589,9 +590,10 @@
             const action = actionFor(order);
             const archiveAction = archiveActionFor(order);
             const items = Array.isArray(order.items) ? order.items : [];
+            const orderDateTime = formatOrderDateTime(order);
             return `<article class="order-card">
                 <div class="order-top">
-                    <div><h3 class="customer">${escapeHtml(order.customer || "Khách hàng")}</h3><div class="order-time">${escapeHtml(order.date)} · ${escapeHtml(order.time)}</div></div>
+                    <div><h3 class="customer">${escapeHtml(order.customer || "Khách hàng")}</h3><div class="order-time">${escapeHtml(orderDateTime.date)} · ${escapeHtml(orderDateTime.time)}</div></div>
                     <div class="table-number">BÀN<strong>${escapeHtml(order.table)}</strong></div>
                 </div>
                 <div class="status ${escapeHtml(order.status)}">${statusText(order.status)}</div>
@@ -626,15 +628,33 @@
         function orderDateKey(order) {
             if (order.createdAt) {
                 const created = new Date(order.createdAt);
-                if (!Number.isNaN(created.getTime())) return localDateKey(created);
+                if (!Number.isNaN(created.getTime())) return dateKeyInOrderTimeZone(created);
             }
             const match = String(order.date || "").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
             if (match) return `${match[3]}-${match[2].padStart(2, "0")}-${match[1].padStart(2, "0")}`;
             return "unknown";
         }
 
-        function localDateKey(date) {
-            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        function dateKeyInOrderTimeZone(date) {
+            const parts = new Intl.DateTimeFormat("en-US", {
+                timeZone: ORDER_TIME_ZONE,
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+            }).formatToParts(date);
+            const value = type => parts.find(part => part.type === type)?.value;
+            return `${value("year")}-${value("month")}-${value("day")}`;
+        }
+
+        function formatOrderDateTime(order) {
+            const created = order.createdAt ? new Date(order.createdAt) : new Date(NaN);
+            if (!Number.isNaN(created.getTime())) {
+                return {
+                    date: created.toLocaleDateString("vi-VN", { timeZone: ORDER_TIME_ZONE }),
+                    time: created.toLocaleTimeString("vi-VN", { timeZone: ORDER_TIME_ZONE })
+                };
+            }
+            return { date: order.date || "", time: order.time || "" };
         }
 
         function formatDateHeading(key) {
@@ -642,11 +662,12 @@
             const [year, month, day] = key.split("-").map(Number);
             const date = new Date(year, month - 1, day);
             const label = date.toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
-            const todayKey = localDateKey(new Date());
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
+            const todayKey = dateKeyInOrderTimeZone(new Date());
+            const yesterday = new Date(`${todayKey}T00:00:00Z`);
+            yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+            const yesterdayKey = yesterday.toISOString().slice(0, 10);
             if (key === todayKey) return `Hôm nay · ${label}`;
-            if (key === localDateKey(yesterday)) return `Hôm qua · ${label}`;
+            if (key === yesterdayKey) return `Hôm qua · ${label}`;
             return label.charAt(0).toUpperCase() + label.slice(1);
         }
 
@@ -720,7 +741,10 @@
                 return;
             }
             try {
-                notificationRegistration = await navigator.serviceWorker.register("/admin-sw.js");
+                notificationRegistration = await navigator.serviceWorker.register("/admin-sw.js?v=2", {
+                    updateViaCache: "none"
+                });
+                await notificationRegistration.update();
                 pushSubscription = await notificationRegistration.pushManager.getSubscription();
                 if (pushSubscription) {
                     await savePushSubscription(pushSubscription);
@@ -743,7 +767,9 @@
                 const permission = await Notification.requestPermission();
                 if (permission !== "granted") return setNotificationState(permission);
 
-                const keyResponse = await fetch("/api/push/public-key");
+                const keyResponse = await fetch(`/api/push/public-key?t=${Date.now()}`, {
+                    cache: "no-store"
+                });
                 const keyData = await keyResponse.json().catch(() => ({}));
                 if (!keyResponse.ok || !keyData.publicKey) throw new Error(keyData.message || "Server chưa cấu hình Web Push");
 

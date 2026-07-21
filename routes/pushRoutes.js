@@ -5,6 +5,8 @@ const { getPublicKey } = require("../services/pushService");
 const router = express.Router();
 
 router.get("/public-key", (req, res) => {
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.set("Pragma", "no-cache");
     const publicKey = getPublicKey();
     if (!publicKey) return res.status(503).json({ success: false, message: "Web Push chưa được cấu hình trên server" });
     res.json({ success: true, publicKey });

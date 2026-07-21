@@ -6,6 +6,7 @@ const Order = require("../models/Order");
 const Menu = require("../models/Menu");
 const mongoose = require("mongoose");
 const { sendOrderNotification } = require("../services/pushService");
+const ORDER_TIME_ZONE = "Asia/Ho_Chi_Minh";
 
 router.get("/", async(req,res)=>{
 
@@ -79,9 +80,9 @@ router.post("/",async(req,res)=>{
 
             status:"pending",
 
-            date:now.toLocaleDateString("vi-VN"),
+            date:now.toLocaleDateString("vi-VN", { timeZone: ORDER_TIME_ZONE }),
 
-            time:now.toLocaleTimeString("vi-VN"),
+            time:now.toLocaleTimeString("vi-VN", { timeZone: ORDER_TIME_ZONE }),
 
             createdAt:now
 
